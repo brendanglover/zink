@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="zink. — Free title capitalisation tool. APA, Chicago, AP, MLA and Email styles. No login, no data collected." />
+  <title>zink. — Title Capitaliser</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="header">
+    <a href="/" class="logo">zink<span>.</span></a>
+    <div class="header-right">
+      <span class="header-tagline">free tools · no login · no data collected</span>
+      <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
+        <svg id="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg id="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             style="display:none">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Main ───────────────────────────────────────────── -->
+  <main>
+
+    <div class="tool-header">
+      <h1 class="tool-title">Title Capitaliser</h1>
+      <p class="tool-subtitle">Pick a style, paste your title, copy the result.</p>
+    </div>
+
+    <!-- Style guide tabs -->
+    <div class="style-tabs" role="tablist">
+      <button class="style-tab" data-style="APA"     role="tab">APA</button>
+      <button class="style-tab" data-style="Chicago" role="tab">Chicago</button>
+      <button class="style-tab" data-style="AP"      role="tab">AP</button>
+      <button class="style-tab" data-style="MLA"     role="tab">MLA</button>
+      <button class="style-tab" data-style="Email"   role="tab">Email</button>
+    </div>
+
+    <!-- Active style description -->
+    <div class="style-desc">
+      <span class="style-desc-name" id="style-desc-name"></span>
+      <span class="style-desc-text" id="style-desc-text"></span>
+    </div>
+
+    <!-- Input -->
+    <div class="card">
+      <div class="card-label-row">
+        <span class="card-label">Input</span>
+        <button class="clear-btn" id="clear-btn">Clear</button>
+      </div>
+      <textarea
+        id="input-text"
+        placeholder="Paste or type your title here..."
+        rows="4"
+        spellcheck="false"
+        aria-label="Title input"
+      ></textarea>
+    </div>
+
+    <!-- Case mode buttons -->
+    <div class="mode-row" role="group" aria-label="Case mode">
+      <button class="mode-btn" data-mode="title"   >Title Case</button>
+      <button class="mode-btn" data-mode="sentence">Sentence case</button>
+      <button class="mode-btn" data-mode="upper"   >UPPERCASE</button>
+      <button class="mode-btn" data-mode="lower"   >lowercase</button>
+      <button class="mode-btn" data-mode="first"   >First Letter</button>
+      <button class="mode-btn" data-mode="alt"     >aLt CaSe</button>
+      <button class="mode-btn" data-mode="toggle"  >tOGGLE</button>
+    </div>
+
+    <!-- Output -->
+    <div class="card">
+      <div class="card-label-row">
+        <span class="card-label">Output</span>
+        <div class="output-meta">
+          <span class="word-count" id="word-count">0 words · 0 chars</span>
+          <button class="copy-btn" id="copy-btn" disabled>Copy</button>
+        </div>
+      </div>
+      <div id="output-text" aria-live="polite">
+        Your converted title will appear here...
+      </div>
+    </div>
+
+    <!-- Style guide reference -->
+    <section class="ref-section">
+      <p class="ref-heading">Style Guide Reference</p>
+      <div class="ref-grid">
+
+        <button class="ref-card" data-style="APA">
+          <span class="ref-card-id">APA</span>
+          <div class="ref-card-name">American Psychological Association</div>
+          <div class="ref-card-desc">Used in psychology, social sciences, and education. Capitalises all words of 4+ letters.</div>
+        </button>
+
+        <button class="ref-card" data-style="Chicago">
+          <span class="ref-card-id">Chicago</span>
+          <div class="ref-card-name">Chicago Manual of Style</div>
+          <div class="ref-card-desc">The standard for book publishing, history, and humanities. Lowercases all prepositions regardless of length.</div>
+        </button>
+
+        <button class="ref-card" data-style="AP">
+          <span class="ref-card-id">AP</span>
+          <div class="ref-card-name">Associated Press</div>
+          <div class="ref-card-desc">The bible of journalism and news writing. Also widely used by bloggers and copywriters.</div>
+        </button>
+
+        <button class="ref-card" data-style="MLA">
+          <span class="ref-card-id">MLA</span>
+          <div class="ref-card-name">Modern Language Association</div>
+          <div class="ref-card-desc">Dominates English literature and humanities academia. Lowercases all prepositions.</div>
+        </button>
+
+        <button class="ref-card" data-style="Email">
+          <span class="ref-card-id">Email</span>
+          <div class="ref-card-name">Email Subject Line</div>
+          <div class="ref-card-desc">Optimised for professional email subject lines. Clean capitalisation that looks polished in any inbox.</div>
+        </button>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────── -->
+  <footer>
+    <span class="logo-text">zink</span><span class="logo-dot">.</span>
+    &nbsp;·&nbsp; Free tools. No login. No data collected.
+  </footer>
+
+  <!-- Scripts: logic first, then UI wiring -->
+  <script src="js/tools/capitalizer.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
