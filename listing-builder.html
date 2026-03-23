@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free Amazon Listing Builder — Upload your keyword CSV, get an optimised product title, backend search terms and bullet points. No login, no data collected, works with Helium 10, Jungle Scout and more." />
+  <title>zink. — Amazon Listing Builder</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    /* ── Listing builder specific styles ── */
+
+    .upload-zone {
+      border: 2px dashed var(--border2);
+      border-radius: var(--radius);
+      padding: 48px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--ease);
+      background: var(--surface);
+      position: relative;
+    }
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .upload-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 12px;
+      color: var(--text-faint);
+    }
+    .upload-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .upload-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .upload-sub span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ── File loaded state ── */
+    .file-loaded {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .file-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent-dim);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .file-info { flex: 1; min-width: 0; }
+    .file-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-meta { font-size: 12px; color: var(--text-muted); }
+    .file-remove {
+      background: none;
+      border: none;
+      color: var(--text-faint);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      padding: 4px;
+      transition: color var(--ease);
+      flex-shrink: 0;
+    }
+    .file-remove:hover { color: var(--text); }
+
+    /* ── Section headings ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-faint);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    /* ── Column mapping grid ── */
+    .mapping-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 600px) { .mapping-grid { grid-template-columns: 1fr; } }
+
+    .mapping-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .mapping-field .required { color: var(--accent); margin-left: 2px; }
+    .mapping-field .optional {
+      font-size: 11px;
+      color: var(--text-faint);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+
+    select {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color var(--ease);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b8fa8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 32px;
+    }
+    select:focus { outline: none; border-color: var(--accent); }
+
+    /* ── Filters row ── */
+    .filters-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 600px) { .filters-row { grid-template-columns: 1fr; } }
+
+    .filter-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13px;
+      transition: border-color var(--ease);
+    }
+    input[type="number"]:focus { outline: none; border-color: var(--accent); }
+    input[type="number"]::placeholder { color: var(--text-faint); }
+
+    /* ── Generate button ── */
+    .generate-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      transition: background var(--ease), opacity var(--ease), transform var(--ease);
+      letter-spacing: 0.02em;
+    }
+    .generate-btn:hover:not(:disabled) {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+    .generate-btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+
+    /* ── Output sections ── */
+    .output-section { margin-bottom: 16px; }
+
+    .output-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      min-height: 44px;
+    }
+
+    .output-label-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .output-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .byte-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+      transition: all var(--ease);
+    }
+    .byte-badge.ok {
+      background: rgba(34, 197, 94, 0.12);
+      color: #22c55e;
+    }
+    .byte-badge.warn {
+      background: rgba(251, 191, 36, 0.12);
+      color: #fbbf24;
+    }
+    .byte-badge.over {
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+    }
+
+    .output-copy-btn {
+      padding: 5px 14px;
+      border-radius: var(--radius-xs);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-muted);
+      transition: all var(--ease);
+      min-width: 60px;
+    }
+    .output-copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .output-copy-btn.copied { background: var(--success); color: #fff; border-color: var(--success); }
+
+    .output-text {
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-word;
+      cursor: pointer;
+      transition: background var(--ease);
+      min-height: 52px;
+    }
+    .output-text:hover { background: var(--surface2); }
+    .output-text.placeholder { color: var(--text-faint); font-style: italic; cursor: default; }
+    .output-text.placeholder:hover { background: transparent; }
+
+    /* ── Keyword stats strip ── */
+    .stats-strip {
+      display: flex;
+      gap: 24px;
+      padding: 14px 16px;
+      background: var(--accent-dim);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--accent);
+      flex-wrap: wrap;
+    }
+    .stat-item { }
+    .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ── Error state ── */
+    .error-msg {
+      padding: 12px 16px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: #ef4444;
+      display: none;
+    }
+    .error-msg.visible { display: block; }
+
+    /* ── Step indicator ── */
+    .steps {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-faint);
+    }
+    .step.active { color: var(--accent); }
+    .step.done { color: var(--success); }
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+      transition: all var(--ease);
+    }
+    .step.active .step-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .step.done .step-num { background: var(--success); border-color: var(--success); color: #fff; }
+    .step-divider { color: var(--border2); font-size: 14px; }
+
+    /* ── Divider between sections ── */
+    .section-gap { margin-top: 28px; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="header">
+    <a href="/" class="logo">zink<span>.</span></a>
+    <div class="header-right">
+      <a href="index.html" style="font-size:13px;font-weight:600;color:var(--text-muted);text-decoration:none;transition:color 0.16s ease" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">Title Capitaliser</a>
+      <span class="header-tagline">free tools · no login · no data collected</span>
+      <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
+        <svg id="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg id="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             style="display:none">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Main ───────────────────────────────────────────── -->
+  <main>
+
+    <!-- Tool header -->
+    <div class="tool-header">
+      <h1 class="tool-title">Amazon Listing Builder</h1>
+      <p class="tool-subtitle">Upload your keyword CSV, map your columns, get a fully optimised listing. Your data never leaves your browser.</p>
+    </div>
+
+    <!-- Step indicator -->
+    <div class="steps">
+      <div class="step active" id="step-1">
+        <div class="step-num">1</div>
+        <span>Upload CSV</span>
+      </div>
+      <div class="step-divider">›</div>
+      <div class="step" id="step-2">
+        <div class="step-num">2</div>
+        <span>Map columns</span>
+      </div>
+      <div class="step-divider">›</div>
+      <div class="step" id="step-3">
+        <div class="step-num">3</div>
+        <span>Generate listing</span>
+      </div>
+    </div>
+
+    <!-- ── Step 1: Upload ── -->
+    <div id="upload-section">
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="csv-input" accept=".csv" aria-label="Upload CSV file" />
+        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <div class="upload-title">Drop your keyword CSV here</div>
+        <div class="upload-sub">or <span>click to browse</span> — works with Helium 10, Jungle Scout, Data Dive, or any CSV</div>
+      </div>
+
+      <div class="file-loaded" id="file-loaded" style="display:none">
+        <div class="file-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </div>
+        <div class="file-info">
+          <div class="file-name" id="file-name">filename.csv</div>
+          <div class="file-meta" id="file-meta">0 rows · 0 columns</div>
+        </div>
+        <button class="file-remove" id="file-remove" aria-label="Remove file">×</button>
+      </div>
+    </div>
+
+    <!-- ── Step 2: Map columns + Filters ── -->
+    <div id="mapping-section" style="display:none" class="section-gap">
+
+      <div class="card">
+        <div class="card-label-row">
+          <span class="card-label">Map your columns</span>
+        </div>
+        <div style="padding:16px">
+          <div class="mapping-grid">
+
+            <div class="mapping-field">
+              <label>Keyword column <span class="required">*</span></label>
+              <select id="map-keyword"></select>
+            </div>
+
+            <div class="mapping-field">
+              <label>Search volume <span class="required">*</span></label>
+              <select id="map-volume"></select>
+            </div>
+
+            <div class="mapping-field">
+              <label>Sales / conversions <span class="optional">(optional)</span></label>
+              <select id="map-sales"></select>
+            </div>
+
+            <div class="mapping-field">
+              <label>Competing products <span class="optional">(optional)</span></label>
+              <select id="map-compete"></select>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-label-row">
+          <span class="card-label">Filters <span style="font-weight:400;letter-spacing:0;text-transform:none;font-size:11px;color:var(--text-faint)">— optional</span></span>
+        </div>
+        <div style="padding:16px">
+          <div class="filters-row">
+            <div class="filter-field">
+              <label>Minimum search volume</label>
+              <input type="number" id="filter-volume" placeholder="e.g. 500" min="0" />
+            </div>
+            <div class="filter-field">
+              <label>Maximum competing products</label>
+              <input type="number" id="filter-compete" placeholder="e.g. 10000" min="0" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="error-msg" id="error-msg"></div>
+
+      <button class="generate-btn" id="generate-btn" style="margin-top:16px">
+        Generate Listing →
+      </button>
+    </div>
+
+    <!-- ── Step 3: Output ── -->
+    <div id="output-section" style="display:none" class="section-gap">
+
+      <!-- Stats strip -->
+      <div class="stats-strip" id="stats-strip" style="margin-bottom:20px">
+        <div class="stat-item">
+          <div class="stat-value" id="stat-keywords">—</div>
+          <div class="stat-label">keywords processed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-top-volume">—</div>
+          <div class="stat-label">top keyword volume</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="stat-coverage">—</div>
+          <div class="stat-label">keywords in output</div>
+        </div>
+      </div>
+
+      <!-- Product Title -->
+      <div class="output-section">
+        <div class="card">
+          <div class="output-header">
+            <div class="output-label-group">
+              <span class="output-label">Product Title</span>
+              <span class="byte-badge ok" id="badge-title">0 / 200 bytes</span>
+            </div>
+            <button class="output-copy-btn" id="copy-title">Copy</button>
+          </div>
+          <div class="output-text placeholder" id="out-title">Your product title will appear here...</div>
+        </div>
+      </div>
+
+      <!-- Backend Search Terms -->
+      <div class="output-section">
+        <div class="card">
+          <div class="output-header">
+            <div class="output-label-group">
+              <span class="output-label">Backend Search Terms</span>
+              <span class="byte-badge ok" id="badge-backend">0 / 249 bytes</span>
+            </div>
+            <button class="output-copy-btn" id="copy-backend">Copy</button>
+          </div>
+          <div class="output-text placeholder" id="out-backend">Your backend search terms will appear here...</div>
+        </div>
+      </div>
+
+      <!-- Bullet Points -->
+      <div id="bullets-container"></div>
+
+      <!-- Regenerate -->
+      <button class="generate-btn" id="regenerate-btn" style="margin-top:8px;background:var(--surface2);color:var(--text);border:1px solid var(--border)">
+        ↺ Adjust filters &amp; regenerate
+      </button>
+
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────── -->
+  <footer>
+    <span class="logo-text">zink</span><span class="logo-dot">.</span>
+    &nbsp;·&nbsp; Free tools. No login. No data collected.
+  </footer>
+
+  <script src="js/tools/listing-builder.js"></script>
+  <script>
+  // ── Theme (same pattern as index.html) ───────────────────
+  const root     = document.documentElement;
+  const themeBtn = document.getElementById('theme-btn');
+  const sunIcon  = document.getElementById('icon-sun');
+  const moonIcon = document.getElementById('icon-moon');
+
+  function applyTheme(t) {
+    root.setAttribute('data-theme', t);
+    try { localStorage.setItem('zink-theme', t); } catch(e) {}
+    sunIcon.style.display  = t === 'dark'  ? 'block' : 'none';
+    moonIcon.style.display = t === 'light' ? 'block' : 'none';
+  }
+
+  const savedTheme = () => { try { return localStorage.getItem('zink-theme'); } catch(e) { return null; } };
+  applyTheme(savedTheme() || (window.matchMedia('(prefers-color-scheme:light)').matches ? 'light' : 'dark'));
+  themeBtn.addEventListener('click', () =>
+    applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+
+  // ── State ─────────────────────────────────────────────────
+  let parsedData = null; // { headers, rows }
+  let lastResult = null; // last generated listing
+
+  // ── Element refs ──────────────────────────────────────────
+  const uploadZone    = document.getElementById('upload-zone');
+  const csvInput      = document.getElementById('csv-input');
+  const fileLoaded    = document.getElementById('file-loaded');
+  const fileNameEl    = document.getElementById('file-name');
+  const fileMetaEl    = document.getElementById('file-meta');
+  const fileRemove    = document.getElementById('file-remove');
+  const mappingSection = document.getElementById('mapping-section');
+  const outputSection  = document.getElementById('output-section');
+  const generateBtn   = document.getElementById('generate-btn');
+  const regenerateBtn = document.getElementById('regenerate-btn');
+  const errorMsg      = document.getElementById('error-msg');
+
+  // ── Step state ────────────────────────────────────────────
+  function setStep(n) {
+    [1, 2, 3].forEach(i => {
+      const el = document.getElementById('step-' + i);
+      el.classList.remove('active', 'done');
+      if (i < n) el.classList.add('done');
+      if (i === n) el.classList.add('active');
+    });
+  }
+
+  // ── Upload handling ───────────────────────────────────────
+  csvInput.addEventListener('change', e => {
+    if (e.target.files[0]) loadFile(e.target.files[0]);
+  });
+
+  uploadZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    uploadZone.classList.add('drag-over');
+  });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.name.endsWith('.csv')) loadFile(file);
+  });
+
+  fileRemove.addEventListener('click', resetTool);
+
+  function loadFile(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        parsedData = parseCSV(e.target.result);
+        showFileLoaded(file.name, parsedData.rows.length, parsedData.headers.length);
+        populateMappingDropdowns(parsedData.headers);
+        mappingSection.style.display = 'block';
+        outputSection.style.display  = 'none';
+        setStep(2);
+      } catch (err) {
+        showError(err.message);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function showFileLoaded(name, rows, cols) {
+    uploadZone.style.display = 'none';
+    fileLoaded.style.display = 'flex';
+    fileNameEl.textContent = name;
+    fileMetaEl.textContent = rows.toLocaleString() + ' rows · ' + cols + ' columns';
+  }
+
+  function resetTool() {
+    parsedData = null;
+    lastResult = null;
+    csvInput.value = '';
+    uploadZone.style.display = 'block';
+    fileLoaded.style.display = 'none';
+    mappingSection.style.display = 'none';
+    outputSection.style.display  = 'none';
+    hideError();
+    setStep(1);
+  }
+
+  // ── Column mapping dropdowns ──────────────────────────────
+  function populateMappingDropdowns(headers) {
+    const selects = ['map-keyword', 'map-volume', 'map-sales', 'map-compete'];
+    const patterns = [KEYWORD_PATTERNS, VOLUME_PATTERNS, SALES_PATTERNS, COMPETE_PATTERNS];
+    const optional = [false, false, true, true];
+
+    selects.forEach((id, i) => {
+      const sel = document.getElementById(id);
+      sel.innerHTML = optional[i] ? '<option value="">— not mapped —</option>' : '';
+      headers.forEach(h => {
+        const opt = document.createElement('option');
+        opt.value = h;
+        opt.textContent = h;
+        sel.appendChild(opt);
+      });
+      // Auto-detect best match
+      const detected = detectColumn(headers, patterns[i]);
+      if (detected) sel.value = detected;
+    });
+  }
+
+  // ── Generate ──────────────────────────────────────────────
+  generateBtn.addEventListener('click', generate);
+  regenerateBtn.addEventListener('click', () => {
+    outputSection.style.display = 'none';
+    mappingSection.style.display = 'block';
+    setStep(2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  function generate() {
+    hideError();
+
+    const mapping = {
+      keyword: document.getElementById('map-keyword').value,
+      volume:  document.getElementById('map-volume').value,
+      sales:   document.getElementById('map-sales').value   || null,
+      compete: document.getElementById('map-compete').value || null,
+    };
+
+    if (!mapping.keyword) { showError('Please select a keyword column.'); return; }
+    if (!mapping.volume)  { showError('Please select a search volume column.'); return; }
+
+    const filters = {
+      minVolume: parseInt(document.getElementById('filter-volume').value)  || 0,
+      maxCompete: parseInt(document.getElementById('filter-compete').value) || 0,
+    };
+
+    try {
+      lastResult = generateListing(parsedData.rows, mapping, filters);
+      renderOutput(lastResult);
+      mappingSection.style.display = 'none';
+      outputSection.style.display  = 'block';
+      setStep(3);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      showError(err.message);
+    }
+  }
+
+  // ── Render output ─────────────────────────────────────────
+  function renderOutput(result) {
+    // Stats
+    document.getElementById('stat-keywords').textContent =
+      result.keywords.length.toLocaleString();
+    document.getElementById('stat-top-volume').textContent =
+      result.keywords[0]?.volume.toLocaleString() || '—';
+
+    // Count keywords that made it into any output
+    const allOutput = result.title + ' ' + result.backend + ' ' + result.bullets.join(' ');
+    const inOutput = result.keywords.filter(k =>
+      allOutput.toLowerCase().includes(k.keyword.toLowerCase())
+    ).length;
+    document.getElementById('stat-coverage').textContent = inOutput.toLocaleString();
+
+    // Title
+    setOutput('out-title', 'badge-title', 'copy-title', result.title, 200);
+
+    // Backend
+    setOutput('out-backend', 'badge-backend', 'copy-backend', result.backend, 249);
+
+    // Bullets
+    const bulletsContainer = document.getElementById('bullets-container');
+    bulletsContainer.innerHTML = '';
+    result.bullets.forEach((bullet, i) => {
+      const div = document.createElement('div');
+      div.className = 'output-section';
+      const badgeId = 'badge-bullet-' + i;
+      const copyId  = 'copy-bullet-' + i;
+      const outId   = 'out-bullet-' + i;
+      div.innerHTML = `
+        <div class="card">
+          <div class="output-header">
+            <div class="output-label-group">
+              <span class="output-label">Bullet Point ${i + 1}</span>
+              <span class="byte-badge ok" id="${badgeId}">0 / 1000 bytes</span>
+            </div>
+            <button class="output-copy-btn" id="${copyId}">Copy</button>
+          </div>
+          <div class="output-text" id="${outId}"></div>
+        </div>`;
+      bulletsContainer.appendChild(div);
+      setOutput(outId, badgeId, copyId, bullet, 1000);
+    });
+  }
+
+  function setOutput(textId, badgeId, copyId, content, maxBytes) {
+    const textEl  = document.getElementById(textId);
+    const badgeEl = document.getElementById(badgeId);
+    const copyEl  = document.getElementById(copyId);
+
+    textEl.textContent = content;
+    textEl.classList.remove('placeholder');
+
+    // Byte badge
+    const bytes = byteLength(content);
+    const pct   = bytes / maxBytes;
+    badgeEl.textContent = bytes + ' / ' + maxBytes + ' bytes';
+    badgeEl.className   = 'byte-badge ' + (pct > 1 ? 'over' : pct > 0.9 ? 'warn' : 'ok');
+
+    // Copy on click
+    textEl.addEventListener('click', () => doCopy(content, copyEl));
+    copyEl.addEventListener('click', () => doCopy(content, copyEl));
+  }
+
+  // ── Copy ──────────────────────────────────────────────────
+  function doCopy(text, btn) {
+    const confirm = () => {
+      btn.textContent = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    };
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(confirm).catch(() => fbCopy(text, confirm));
+    } else {
+      fbCopy(text, confirm);
+    }
+  }
+
+  function fbCopy(text, cb) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    cb();
+  }
+
+  // ── Error handling ────────────────────────────────────────
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.classList.add('visible');
+  }
+  function hideError() {
+    errorMsg.classList.remove('visible');
+  }
+
+  </script>
+</body>
+</html>
