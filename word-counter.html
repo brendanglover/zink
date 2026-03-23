@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free word counter with platform limit checker. Counts words, characters, sentences, reading time. Checks limits for Amazon, SEO, social media, Google Ads and email. No login, no data collected." />
+  <title>zink. — Word Counter</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XY13QWYYQ4"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XY13QWYYQ4');</script>
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    /* ── Word counter specific styles ── */
+    .layout{display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start}
+    @media(max-width:720px){.layout{grid-template-columns:1fr}}
+
+    /* Context strip */
+    .context-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--accent-dim);border:1px solid rgba(99,102,241,0.3);border-radius:var(--radius-sm);margin-bottom:20px;animation:slideIn 0.25s ease}
+    @keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .context-left{display:flex;align-items:center;gap:10px}
+    .context-icon{width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .context-title{font-size:13px;font-weight:700;color:var(--text)}
+    .context-sub{font-size:12px;color:var(--text-muted)}
+    .context-dismiss{background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:20px;line-height:1;padding:4px 6px;border-radius:4px;transition:color var(--ease);font-family:var(--font)}
+    .context-dismiss:hover{color:var(--text)}
+
+    /* Textarea */
+    #input-text{width:100%;padding:16px;background:transparent;color:var(--text);font-family:var(--font);font-size:16px;line-height:1.7;resize:vertical;border:none;display:block;min-height:220px}
+    #input-text:focus{outline:none}
+    #input-text::placeholder{color:var(--text-faint)}
+
+    /* Stats grid */
+    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}
+    .stat-cell{background:var(--surface);padding:14px 16px}
+    .stat-value{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.5px;line-height:1;margin-bottom:4px}
+    .stat-label{font-size:11px;font-weight:600;color:var(--text-faint);letter-spacing:.05em;text-transform:uppercase}
+    .stat-cell.full{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+    .reading-time-text{font-size:13px;color:var(--text-muted)}
+    .reading-time-value{font-size:15px;font-weight:700;color:var(--accent)}
+
+    /* Right column */
+    .right-col{display:flex;flex-direction:column;gap:16px}
+    .section-label{font-size:11px;font-weight:700;color:var(--text-faint);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+    .platform-groups{display:flex;flex-direction:column;gap:10px}
+    .group-label{font-size:10px;font-weight:700;color:var(--text-faint);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px;padding:0 2px}
+    .platform-pills{display:flex;flex-wrap:wrap;gap:5px}
+    .platform-pill{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;font-family:var(--font);cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);transition:all var(--ease)}
+    .platform-pill:hover{color:var(--text);border-color:var(--border2)}
+    .platform-pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+    /* Limit display */
+    .limit-display{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color var(--ease)}
+    .limit-display.ok{border-color:rgba(34,197,94,0.4)}
+    .limit-display.warn{border-color:rgba(251,191,36,0.4)}
+    .limit-display.over{border-color:rgba(239,68,68,0.4)}
+    .limit-top{padding:14px 16px;border-bottom:1px solid var(--border)}
+    .limit-platform-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+    .limit-description{font-size:12px;color:var(--text-muted)}
+    .limit-meter{padding:14px 16px}
+    .meter-numbers{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+    .meter-current{font-size:28px;font-weight:700;letter-spacing:-.5px;transition:color var(--ease)}
+    .meter-current.ok{color:var(--success)}
+    .meter-current.warn{color:var(--warn)}
+    .meter-current.over{color:#ef4444}
+    .meter-max{font-size:14px;color:var(--text-muted);font-weight:500}
+    .meter-bar-track{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+    .meter-bar-fill{height:100%;border-radius:3px;transition:width 0.2s ease,background 0.2s ease;width:0%}
+    .meter-bar-fill.ok{background:var(--success)}
+    .meter-bar-fill.warn{background:var(--warn)}
+    .meter-bar-fill.over{background:#ef4444}
+    .meter-label{margin-top:8px;font-size:12px;font-weight:600;transition:color var(--ease)}
+    .meter-label.ok{color:var(--success)}
+    .meter-label.warn{color:var(--warn)}
+    .meter-label.over{color:#ef4444}
+
+    /* Top words */
+    .top-words{display:flex;flex-direction:column;gap:6px;padding:14px 16px}
+    .word-row{display:flex;align-items:center;gap:8px}
+    .word-bar-track{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
+    .word-bar-fill{height:100%;background:var(--accent-dim);border-radius:3px;transition:width 0.3s ease}
+    .word-text{font-size:13px;font-weight:600;color:var(--text);min-width:80px}
+    .word-count-badge{font-size:11px;font-weight:700;color:var(--text-faint);min-width:24px;text-align:right}
+    .words-placeholder{padding:14px 16px;font-size:13px;color:var(--text-faint);font-style:italic}
+
+    :root { --success:#22c55e; --warn:#fbbf24; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <a href="/" class="logo">zink<span>.</span></a>
+    <div class="header-right">
+      <a href="/" style="font-size:13px;font-weight:600;color:var(--text-muted);text-decoration:none;transition:color var(--ease)" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">← All Tools</a>
+      <span class="header-tagline">free tools · no login · no data collected</span>
+      <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
+        <svg id="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="tool-header">
+      <h1 class="tool-title">Word Counter</h1>
+      <p class="tool-subtitle">Paste your text, pick a platform, see exactly where you stand.</p>
+    </div>
+
+    <!-- Context strip — shown when arriving from Listing Builder -->
+    <div class="context-strip" id="context-strip" style="display:none">
+      <div class="context-left">
+        <div class="context-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div>
+          <div class="context-title" id="context-title">Sent from Listing Builder</div>
+          <div class="context-sub" id="context-sub">Platform limit pre-selected</div>
+        </div>
+      </div>
+      <button class="context-dismiss" id="context-dismiss" aria-label="Dismiss">×</button>
+    </div>
+
+    <div class="layout">
+
+      <!-- Left: input + stats -->
+      <div style="display:flex;flex-direction:column;gap:12px">
+
+        <div class="card">
+          <div class="card-label-row">
+            <span class="card-label">Your text</span>
+            <button class="clear-btn" id="clear-btn">Clear</button>
+          </div>
+          <textarea id="input-text" placeholder="Paste or type your text here..." spellcheck="false" aria-label="Text input"></textarea>
+        </div>
+
+        <div class="card">
+          <div class="card-label-row"><span class="card-label">Stats</span></div>
+          <div class="stats-grid">
+            <div class="stat-cell"><div class="stat-value" id="stat-words">0</div><div class="stat-label">Words</div></div>
+            <div class="stat-cell"><div class="stat-value" id="stat-chars">0</div><div class="stat-label">Characters</div></div>
+            <div class="stat-cell"><div class="stat-value" id="stat-no-space">0</div><div class="stat-label">No spaces</div></div>
+            <div class="stat-cell"><div class="stat-value" id="stat-sentences">0</div><div class="stat-label">Sentences</div></div>
+            <div class="stat-cell"><div class="stat-value" id="stat-paragraphs">0</div><div class="stat-label">Paragraphs</div></div>
+            <div class="stat-cell"><div class="stat-value" id="stat-avg">0</div><div class="stat-label">Avg word length</div></div>
+            <div class="stat-cell full">
+              <span class="reading-time-text">Estimated reading time</span>
+              <span class="reading-time-value" id="stat-reading">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label-row">
+            <span class="card-label">Top words</span>
+            <span style="font-size:11px;color:var(--text-faint)">most frequent</span>
+          </div>
+          <div id="top-words-container">
+            <div class="words-placeholder">Start typing to see your most frequent words...</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: platform selector + meter -->
+      <div class="right-col">
+
+        <div class="card" style="padding:16px">
+          <div class="section-label">Platform limit checker</div>
+          <div class="platform-groups">
+
+            <div>
+              <div class="group-label">SEO</div>
+              <div class="platform-pills">
+                <button class="platform-pill" data-platform="meta-title">Meta Title</button>
+                <button class="platform-pill" data-platform="meta-desc">Meta Description</button>
+              </div>
+            </div>
+
+            <div>
+              <div class="group-label">Amazon</div>
+              <div class="platform-pills">
+                <button class="platform-pill" data-platform="amz-title">Title</button>
+                <button class="platform-pill" data-platform="amz-bullet">Bullet Point</button>
+                <button class="platform-pill" data-platform="amz-backend">Backend</button>
+                <button class="platform-pill" data-platform="amz-desc">Description</button>
+              </div>
+            </div>
+
+            <div>
+              <div class="group-label">Social</div>
+              <div class="platform-pills">
+                <button class="platform-pill" data-platform="twitter">X / Twitter</button>
+                <button class="platform-pill" data-platform="linkedin">LinkedIn</button>
+                <button class="platform-pill" data-platform="instagram">Instagram</button>
+              </div>
+            </div>
+
+            <div>
+              <div class="group-label">Google Ads</div>
+              <div class="platform-pills">
+                <button class="platform-pill" data-platform="gads-headline">Headline</button>
+                <button class="platform-pill" data-platform="gads-desc">Description</button>
+              </div>
+            </div>
+
+            <div>
+              <div class="group-label">Email</div>
+              <div class="platform-pills">
+                <button class="platform-pill" data-platform="email-subject">Subject Line</button>
+                <button class="platform-pill" data-platform="email-preview">Preview Text</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="limit-display" id="limit-display">
+          <div class="limit-top">
+            <div class="limit-platform-name" id="limit-name">Select a platform above</div>
+            <div class="limit-description" id="limit-desc">Choose any platform to see your count against its limit.</div>
+          </div>
+          <div class="limit-meter">
+            <div class="meter-numbers">
+              <span class="meter-current ok" id="meter-current">—</span>
+              <span class="meter-max" id="meter-max"></span>
+            </div>
+            <div class="meter-bar-track"><div class="meter-bar-fill ok" id="meter-fill"></div></div>
+            <div class="meter-label ok" id="meter-label"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span class="logo-text">zink</span><span class="logo-dot">.</span>
+    &nbsp;·&nbsp; Free tools. No login. No data collected.
+  </footer>
+
+  <script>
+  // ── Theme ────────────────────────────────────────────────
+  const root=document.documentElement,themeBtn=document.getElementById('theme-btn'),sunIcon=document.getElementById('icon-sun'),moonIcon=document.getElementById('icon-moon');
+  function applyTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('zink-theme',t)}catch(e){}sunIcon.style.display=t==='dark'?'block':'none';moonIcon.style.display=t==='light'?'block':'none';}
+  const saved=()=>{try{return localStorage.getItem('zink-theme')}catch(e){return null}};
+  applyTheme(saved()||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+  themeBtn.addEventListener('click',()=>applyTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+
+  // ── Platform data ─────────────────────────────────────────
+  const PLATFORMS={
+    'meta-title':    {name:'Google Meta Title',       desc:'Recommended max for search result display. Longer titles get truncated.',   limit:60,   type:'chars'},
+    'meta-desc':     {name:'Google Meta Description', desc:'Optimal length before truncation in search results. Aim for 150–160.',      limit:160,  type:'chars'},
+    'amz-title':     {name:'Amazon Product Title',    desc:'Amazon allows up to 200 bytes. Exceeding this can suppress your listing.',  limit:200,  type:'bytes'},
+    'amz-bullet':    {name:'Amazon Bullet Point',     desc:'Each bullet point allows up to 1,000 bytes in Seller Central.',            limit:1000, type:'bytes'},
+    'amz-backend':   {name:'Amazon Backend Keywords', desc:'249 bytes max. No commas, no repetition. Every byte counts here.',         limit:249,  type:'bytes'},
+    'amz-desc':      {name:'Amazon Description',      desc:'Product description field allows up to 2,000 bytes.',                      limit:2000, type:'bytes'},
+    'twitter':       {name:'X / Twitter Post',        desc:'Hard limit. Posts over 280 characters cannot be published.',               limit:280,  type:'chars'},
+    'linkedin':      {name:'LinkedIn Post',           desc:'Posts truncate at 210 chars in the feed. Full text shown on click.',       limit:3000, type:'chars'},
+    'instagram':     {name:'Instagram Caption',       desc:'Captions truncate at ~125 chars in feed. Full text shown on tap.',         limit:2200, type:'chars'},
+    'gads-headline': {name:'Google Ads Headline',     desc:'Hard character limit. Each ad has up to 15 headlines of 30 chars each.',   limit:30,   type:'chars'},
+    'gads-desc':     {name:'Google Ads Description',  desc:'Two description lines allowed, 90 characters each.',                      limit:90,   type:'chars'},
+    'email-subject': {name:'Email Subject Line',      desc:'Most email clients display 60 chars before truncating on desktop.',       limit:60,   type:'chars'},
+    'email-preview': {name:'Email Preview Text',      desc:'The snippet shown below the subject. Around 90 chars before truncation.',  limit:90,   type:'chars'},
+  };
+
+  const PLATFORM_NAMES={
+    'amz-title':   'Amazon Title limit pre-selected',
+    'amz-bullet':  'Amazon Bullet Point limit pre-selected',
+    'amz-backend': 'Amazon Backend Keywords limit pre-selected',
+    'amz-desc':    'Amazon Description limit pre-selected',
+  };
+
+  const STOPWORDS=new Set(['the','a','an','and','or','but','in','on','at','to','for','of','with','by','from','is','are','was','were','be','been','being','have','has','had','do','does','did','will','would','could','should','may','might','it','its','this','that','these','those','i','you','he','she','we','they','my','your','his','her','our','their','not','so','if','as','up','out','about','what','which','who','when','where','how','all','just','more','also','than','then','into','over','after','before','very','can','no']);
+
+  const encoder=new TextEncoder();
+  function byteLen(str){return encoder.encode(str).length;}
+  let activePlatform=null;
+  const inputEl=document.getElementById('input-text');
+
+  // ── Stats ─────────────────────────────────────────────────
+  function calcStats(text){
+    const words=text.trim()?text.trim().split(/\s+/).filter(Boolean):[];
+    const sentences=text.trim()?(text.match(/[^.!?]*[.!?]+/g)||[text]).filter(s=>s.trim()).length:0;
+    const paragraphs=text.trim()?text.split(/\n\s*\n/).filter(p=>p.trim()).length:0;
+    const avgWord=words.length?(words.reduce((s,w)=>s+w.replace(/[^a-zA-Z]/g,'').length,0)/words.length).toFixed(1):0;
+    return{words:words.length,chars:text.length,noSpace:text.replace(/\s/g,'').length,sentences,paragraphs,avgWord,readingMins:Math.ceil(words.length/200),wordList:words};
+  }
+
+  function updateStats(){
+    const text=inputEl.value;const s=calcStats(text);
+    document.getElementById('stat-words').textContent=s.words.toLocaleString();
+    document.getElementById('stat-chars').textContent=s.chars.toLocaleString();
+    document.getElementById('stat-no-space').textContent=s.noSpace.toLocaleString();
+    document.getElementById('stat-sentences').textContent=s.sentences.toLocaleString();
+    document.getElementById('stat-paragraphs').textContent=s.paragraphs.toLocaleString();
+    document.getElementById('stat-avg').textContent=s.avgWord;
+    const rm=s.readingMins;
+    document.getElementById('stat-reading').textContent=rm===0?'—':rm<1?'under 1 min':rm+(rm===1?' min':' mins');
+    updateTopWords(s.wordList);
+    if(activePlatform)updateMeter(text);
+  }
+
+  // ── Top words ─────────────────────────────────────────────
+  function updateTopWords(words){
+    const c=document.getElementById('top-words-container');
+    if(!words.length){c.innerHTML='<div class="words-placeholder">Start typing to see your most frequent words...</div>';return;}
+    const freq={};
+    words.forEach(w=>{const cl=w.toLowerCase().replace(/[^a-z]/g,'');if(cl.length>2&&!STOPWORDS.has(cl))freq[cl]=(freq[cl]||0)+1;});
+    const sorted=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    if(!sorted.length){c.innerHTML='<div class="words-placeholder">No significant words found yet...</div>';return;}
+    const max=sorted[0][1];
+    c.innerHTML='<div class="top-words">'+sorted.map(([w,n])=>`<div class="word-row"><span class="word-text">${w}</span><div class="word-bar-track"><div class="word-bar-fill" style="width:${Math.round((n/max)*100)}%"></div></div><span class="word-count-badge">${n}</span></div>`).join('')+'</div>';
+  }
+
+  // ── Platform meter ────────────────────────────────────────
+  function updateMeter(text){
+    if(!activePlatform)return;
+    const p=PLATFORMS[activePlatform];
+    const current=p.type==='bytes'?byteLen(text):text.length;
+    const pct=Math.min((current/p.limit)*100,100);
+    const state=current>p.limit?'over':pct>=85?'warn':'ok';
+    document.getElementById('limit-display').className='limit-display '+state;
+    document.getElementById('meter-current').className='meter-current '+state;
+    document.getElementById('meter-current').textContent=current.toLocaleString();
+    document.getElementById('meter-max').textContent='/ '+p.limit.toLocaleString()+(p.type==='bytes'?' bytes':' chars');
+    document.getElementById('meter-fill').className='meter-bar-fill '+state;
+    document.getElementById('meter-fill').style.width=pct+'%';
+    const rem=p.limit-current;const lbl=document.getElementById('meter-label');
+    lbl.className='meter-label '+state;
+    const unit=p.type==='bytes'?'bytes':'chars';
+    lbl.textContent=current>p.limit?Math.abs(rem).toLocaleString()+' '+unit+' over the limit':rem===0?'Exactly at the limit':rem.toLocaleString()+' '+unit+' remaining';
+  }
+
+  function selectPlatform(id){
+    activePlatform=id;
+    document.querySelectorAll('.platform-pill').forEach(p=>p.classList.toggle('active',p.dataset.platform===id));
+    const p=PLATFORMS[id];
+    document.getElementById('limit-name').textContent=p.name;
+    document.getElementById('limit-desc').textContent=p.desc;
+    updateMeter(inputEl.value);
+  }
+
+  // ── Events ────────────────────────────────────────────────
+  inputEl.addEventListener('input',updateStats);
+  document.getElementById('clear-btn').addEventListener('click',()=>{
+    inputEl.value='';
+    document.getElementById('context-strip').style.display='none';
+    updateStats();inputEl.focus();
+  });
+  document.querySelectorAll('.platform-pill').forEach(btn=>btn.addEventListener('click',()=>selectPlatform(btn.dataset.platform)));
+  document.getElementById('context-dismiss').addEventListener('click',()=>document.getElementById('context-strip').style.display='none');
+
+  // ── Check for incoming data from Listing Builder ──────────
+  (function checkIncoming(){
+    try{
+      const text=sessionStorage.getItem('zink-wc-text');
+      const platform=sessionStorage.getItem('zink-wc-platform');
+      const source=sessionStorage.getItem('zink-wc-source');
+      if(text){
+        inputEl.value=text;
+        if(platform){
+          selectPlatform(platform);
+          const strip=document.getElementById('context-strip');
+          strip.style.display='flex';
+          document.getElementById('context-title').textContent='Sent from Listing Builder — '+source;
+          document.getElementById('context-sub').textContent=PLATFORM_NAMES[platform]||'Platform limit pre-selected';
+        }
+        sessionStorage.removeItem('zink-wc-text');
+        sessionStorage.removeItem('zink-wc-platform');
+        sessionStorage.removeItem('zink-wc-source');
+      }
+    }catch(e){}
+    updateStats();
+  })();
+  </script>
+</body>
+</html>

@@ -266,6 +266,10 @@
     }
     .output-copy-btn:hover { border-color: var(--accent); color: var(--accent); }
     .output-copy-btn.copied { background: var(--success); color: #fff; border-color: var(--success); }
+    .btn-group { display: flex; align-items: center; gap: 6px; }
+    .analyse-btn { padding: 5px 12px; border-radius: var(--radius-xs); font-size: 12px; font-weight: 600; font-family: var(--font); cursor: pointer; border: 1px solid var(--accent-hover); background: var(--accent-dim); color: var(--accent); transition: all var(--ease); display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .analyse-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .analyse-btn svg { flex-shrink: 0; }
 
     .output-text {
       padding: 14px 16px;
@@ -525,7 +529,10 @@
               <span class="output-label">Product Title</span>
               <span class="byte-badge ok" id="badge-title">0 / 200 bytes</span>
             </div>
-            <button class="output-copy-btn" id="copy-title">Copy</button>
+            <div class="btn-group">
+              <button class="output-copy-btn" id="copy-title">Copy</button>
+              <button class="analyse-btn" onclick="sendToWordCounter('title','Product Title','amz-title')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Analyse</button>
+            </div>
           </div>
           <div class="output-text placeholder" id="out-title">Your product title will appear here...</div>
         </div>
@@ -539,7 +546,10 @@
               <span class="output-label">Backend Search Terms</span>
               <span class="byte-badge ok" id="badge-backend">0 / 249 bytes</span>
             </div>
-            <button class="output-copy-btn" id="copy-backend">Copy</button>
+            <div class="btn-group">
+              <button class="output-copy-btn" id="copy-backend">Copy</button>
+              <button class="analyse-btn" onclick="sendToWordCounter('backend','Backend Search Terms','amz-backend')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Analyse</button>
+            </div>
           </div>
           <div class="output-text placeholder" id="out-backend">Your backend search terms will appear here...</div>
         </div>
@@ -762,7 +772,10 @@
               <span class="output-label">Bullet Point ${i + 1}</span>
               <span class="byte-badge ok" id="${badgeId}">0 / 1000 bytes</span>
             </div>
-            <button class="output-copy-btn" id="${copyId}">Copy</button>
+            <div class="btn-group">
+              <button class="output-copy-btn" id="${copyId}">Copy</button>
+              <button class="analyse-btn" onclick="sendToWordCounter('${outId}','Bullet Point ${i + 1}','amz-bullet')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Analyse</button>
+            </div>
           </div>
           <div class="output-text" id="${outId}"></div>
         </div>`;
@@ -822,6 +835,18 @@
   }
   function hideError() {
     errorMsg.classList.remove('visible');
+  }
+
+  // ── Send output to Word Counter ───────────────────────────
+  function sendToWordCounter(outputId, label, platform) {
+    const el = document.getElementById(outputId);
+    if (!el) return;
+    try {
+      sessionStorage.setItem('zink-wc-text', el.textContent || '');
+      sessionStorage.setItem('zink-wc-platform', platform);
+      sessionStorage.setItem('zink-wc-source', label);
+    } catch(e) {}
+    window.location.href = 'word-counter.html';
   }
 
   </script>
