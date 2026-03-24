@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Allow: /capitaliser.html
+Allow: /listing-builder.html
+Allow: /word-counter.html
+
+Sitemap: https://zink-za.netlify.app/sitemap.xml

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0f1117"/>
+
+  <!-- Subtle grid lines -->
+  <line x1="0" y1="210" x2="1200" y2="210" stroke="#1a1d27" stroke-width="1"/>
+  <line x1="0" y1="420" x2="1200" y2="420" stroke="#1a1d27" stroke-width="1"/>
+  <line x1="400" y1="0" x2="400" y2="630" stroke="#1a1d27" stroke-width="1"/>
+  <line x1="800" y1="0" x2="800" y2="630" stroke="#1a1d27" stroke-width="1"/>
+
+  <!-- Accent glow blob -->
+  <ellipse cx="600" cy="315" rx="340" ry="200" fill="#6366f1" opacity="0.06"/>
+
+  <!-- Logo wordmark — centred -->
+  <text x="600" y="290" font-family="system-ui,-apple-system,sans-serif" font-weight="700" font-size="120" fill="#f0f0f5" text-anchor="middle" letter-spacing="-4">zink</text>
+  <text x="600" y="290" font-family="system-ui,-apple-system,sans-serif" font-weight="700" font-size="120" fill="#f0f0f5" text-anchor="middle" letter-spacing="-4" dx="248">.</text>
+  <!-- Indigo full stop — drawn separately for colour control -->
+  <text x="848" y="290" font-family="system-ui,-apple-system,sans-serif" font-weight="700" font-size="120" fill="#6366f1" text-anchor="middle">.</text>
+
+  <!-- Tagline -->
+  <text x="600" y="370" font-family="system-ui,-apple-system,sans-serif" font-weight="400" font-size="28" fill="#8b8fa8" text-anchor="middle" letter-spacing="0.5">The tools you actually use. Nothing you don't.</text>
+
+  <!-- Tool pills -->
+  <rect x="246" y="430" width="196" height="42" rx="21" fill="#1a1d27" stroke="#2a2d3a" stroke-width="1"/>
+  <text x="344" y="456" font-family="system-ui,-apple-system,sans-serif" font-size="16" font-weight="600" fill="#8b8fa8" text-anchor="middle">Title Capitaliser</text>
+
+  <rect x="460" y="430" width="180" height="42" rx="21" fill="#1a1d27" stroke="#2a2d3a" stroke-width="1"/>
+  <text x="550" y="456" font-family="system-ui,-apple-system,sans-serif" font-size="16" font-weight="600" fill="#8b8fa8" text-anchor="middle">Listing Builder</text>
+
+  <rect x="658" y="430" width="164" height="42" rx="21" fill="#1a1d27" stroke="#2a2d3a" stroke-width="1"/>
+  <text x="740" y="456" font-family="system-ui,-apple-system,sans-serif" font-size="16" font-weight="600" fill="#8b8fa8" text-anchor="middle">Word Counter</text>
+
+  <!-- URL strip at bottom -->
+  <rect x="0" y="560" width="1200" height="70" fill="#1a1d27"/>
+  <text x="600" y="603" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="500" fill="#4a4e68" text-anchor="middle" letter-spacing="1">zink-za.netlify.app · Free tools · No login · No data collected</text>
+</svg>
