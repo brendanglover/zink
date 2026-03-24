@@ -64,8 +64,10 @@ function updateOutput() {
 
   const words = raw.trim() ? raw.trim().split(/\s+/).filter(Boolean).length : 0;
   const chars = raw.length;
-  wordCount.textContent =
-    `${words} ${words === 1 ? 'word' : 'words'} · ${chars} ${chars === 1 ? 'char' : 'chars'}`;
+  const outChars = result.length;
+  wordCount.textContent = result
+    ? `${words} ${words === 1 ? 'word' : 'words'} · ${chars} ${chars === 1 ? 'char' : 'chars'} · output: ${outChars}`
+    : `${words} ${words === 1 ? 'word' : 'words'} · ${chars} ${chars === 1 ? 'char' : 'chars'}`;
 }
 
 // ── Style switching ───────────────────────────────────────────────────────────
@@ -127,6 +129,9 @@ function fallbackCopy(text, cb) {
 // ── Event listeners ───────────────────────────────────────────────────────────
 
 inputEl.addEventListener('input', updateOutput);
+inputEl.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); doCopy(); }
+});
 clearBtn.addEventListener('click', () => { inputEl.value = ''; updateOutput(); inputEl.focus(); });
 copyBtn.addEventListener('click', doCopy);
 outputEl.addEventListener('click', doCopy);
