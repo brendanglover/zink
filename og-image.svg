@@ -32,5 +32,5 @@
 
   <!-- URL strip at bottom -->
   <rect x="0" y="560" width="1200" height="70" fill="#1a1d27"/>
-  <text x="600" y="603" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="500" fill="#4a4e68" text-anchor="middle" letter-spacing="1">zink-za.netlify.app · Free tools · No login · No data collected</text>
+  <text x="600" y="603" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="500" fill="#4a4e68" text-anchor="middle" letter-spacing="1">gotzink.com · Free tools · No login · No data collected</text>
 </svg>
