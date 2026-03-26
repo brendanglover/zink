@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="description" content="Free keyword density analyser. Check keyword frequency, density percentage and prominence for single words, 2-word and 3-word phrases. Essential for Amazon listings and SEO. No login, no data collected."/>
+<meta name="robots" content="index, follow"/>
+<title>Free Keyword Density Analyser — Amazon & SEO | zink.</title>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://gotzink.com/keyword-density.html"/>
+<meta property="og:title" content="Free Keyword Density Analyser — Amazon & SEO"/>
+<meta property="og:description" content="Analyse keyword frequency, density and prominence. Supports single words and multi-word phrases. Colour-coded density signals. Free, no login."/>
+<meta property="og:image" content="https://gotzink.com/og-image.svg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Free Keyword Density Analyser | zink."/>
+<meta name="twitter:description" content="Analyse keyword frequency, density and prominence for Amazon listings and SEO. Free, no login."/>
+<meta name="twitter:image" content="https://gotzink.com/og-image.svg"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XY13QWYYQ4"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XY13QWYYQ4');</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;
+  --border:#2a2d3a;--border2:#363a50;
+  --text:#f0f0f5;--text-muted:#8b8fa8;--text-faint:#4a4e68;
+  --accent:#6366f1;--accent-dim:rgba(99,102,241,0.12);
+  --success:#22c55e;--success-dim:rgba(34,197,94,0.1);
+  --warn:#fbbf24;--warn-dim:rgba(251,191,36,0.1);
+  --danger:#ef4444;--danger-dim:rgba(239,68,68,0.1);
+  --info:#38bdf8;--info-dim:rgba(56,189,248,0.1);
+  --radius:12px;--radius-sm:8px;--radius-xs:6px;
+  --font:'Outfit',sans-serif;--ease:0.16s ease;
+}
+[data-theme="light"]{
+  --bg:#f4f5f9;--surface:#fff;--surface2:#eef0f7;
+  --border:#e2e4ed;--border2:#cdd0e0;
+  --text:#111827;--text-muted:#6b7280;--text-faint:#b0b4c8;
+  --accent-dim:rgba(99,102,241,0.08);
+  --success-dim:rgba(34,197,94,0.08);
+  --warn-dim:rgba(251,191,36,0.08);
+  --danger-dim:rgba(239,68,68,0.08);
+}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;transition:background var(--ease),color var(--ease);line-height:1.6}
+::selection{background:var(--accent);color:#fff}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* Header */
+.header{height:58px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.logo{font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--text);text-decoration:none}
+.logo span{color:var(--accent)}
+.header-right{display:flex;align-items:center;gap:14px}
+.back-link{font-size:13px;font-weight:600;color:var(--text-muted);text-decoration:none;transition:color var(--ease)}
+.back-link:hover{color:var(--text)}
+.tagline{font-size:12px;color:var(--text-faint);font-weight:500}
+.theme-btn{width:36px;height:36px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background var(--ease),color var(--ease)}
+.theme-btn:hover{background:var(--border);color:var(--text)}
+
+main{flex:1;max-width:900px;margin:0 auto;width:100%;padding:44px 24px 80px}
+.tool-header{margin-bottom:32px}
+.tool-title{font-size:26px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px}
+.tool-subtitle{font-size:15px;color:var(--text-muted)}
+
+/* Card */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.card-label-row{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;min-height:42px}
+.card-label{font-size:11px;font-weight:700;color:var(--text-faint);letter-spacing:.1em;text-transform:uppercase}
+
+/* Input area */
+.input-area{width:100%;padding:16px;background:transparent;color:var(--text);font-family:var(--font);font-size:15px;line-height:1.7;resize:vertical;border:none;display:block;min-height:160px}
+.input-area:focus{outline:none}
+.input-area::placeholder{color:var(--text-faint)}
+
+/* Upload zone */
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--radius-sm);padding:20px;text-align:center;cursor:pointer;transition:all var(--ease);background:var(--surface2);position:relative;margin:0 16px 16px}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--accent);background:var(--accent-dim)}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-zone-text{font-size:13px;color:var(--text-muted)}
+.upload-zone-text span{color:var(--accent);font-weight:600}
+
+/* Controls row */
+.controls-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface)}
+
+/* Toggle buttons */
+.toggle-group{display:flex;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:3px}
+.toggle-btn{padding:6px 14px;border-radius:var(--radius-xs);font-size:12px;font-weight:600;font-family:var(--font);cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all var(--ease)}
+.toggle-btn:hover{color:var(--text)}
+.toggle-btn.active{background:var(--accent);color:#fff}
+
+/* Target keyword input */
+.target-wrap{flex:1;min-width:160px;position:relative}
+.target-input{width:100%;padding:7px 12px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);font-size:13px;transition:border-color var(--ease)}
+.target-input:focus{outline:none;border-color:var(--accent)}
+.target-input::placeholder{color:var(--text-faint)}
+.target-label{font-size:11px;font-weight:600;color:var(--text-faint);white-space:nowrap}
+
+/* Analyse button */
+.analyse-btn{padding:8px 20px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;font-family:var(--font);cursor:pointer;border:none;background:var(--accent);color:#fff;transition:background var(--ease),transform var(--ease);white-space:nowrap}
+.analyse-btn:hover{background:#4f52d9;transform:translateY(-1px)}
+.analyse-btn:disabled{opacity:.35;cursor:default;transform:none}
+
+/* Clear btn */
+.clear-btn{font-size:12px;color:var(--text-faint);background:none;border:none;cursor:pointer;font-family:var(--font);padding:2px 6px;transition:color var(--ease)}
+.clear-btn:hover{color:var(--text-muted)}
+
+/* Summary stats */
+.summary-strip{display:flex;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px;align-items:stretch}
+.summary-stat{flex:1;padding:16px;text-align:center;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.summary-stat:last-child{border-right:none}
+.summary-val{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.5px;line-height:1;margin-bottom:3px}
+.summary-lbl{font-size:11px;font-weight:600;color:var(--text-faint);letter-spacing:.05em;text-transform:uppercase}
+
+/* Results table */
+.results-header{display:grid;grid-template-columns:1fr 70px 80px 90px 120px;gap:0;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.results-header span{font-size:11px;font-weight:700;color:var(--text-faint);letter-spacing:.08em;text-transform:uppercase}
+.result-row{display:grid;grid-template-columns:1fr 70px 80px 90px 120px;gap:0;padding:11px 16px;border-bottom:1px solid var(--border);align-items:center;transition:background var(--ease)}
+.result-row:last-child{border-bottom:none}
+.result-row:hover{background:var(--surface2)}
+.result-row.highlighted{background:var(--accent-dim)}
+
+/* Keyword text */
+.kw-text{font-size:14px;font-weight:600;color:var(--text);word-break:break-word}
+.kw-text.target-match{color:var(--accent)}
+
+/* Count */
+.kw-count{font-size:14px;font-weight:700;color:var(--text);text-align:center}
+
+/* Density badge */
+.density-badge{display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.density-sparse{background:rgba(148,163,184,0.1);color:#94a3b8}
+.density-low{background:var(--info-dim);color:var(--info)}
+.density-good{background:var(--success-dim);color:var(--success)}
+.density-warn{background:var(--warn-dim);color:var(--warn)}
+.density-over{background:var(--danger-dim);color:var(--danger)}
+
+/* Prominence */
+.prominence{font-size:12px;font-weight:600;color:var(--text-muted)}
+.prominence.high{color:var(--success)}
+.prominence.medium{color:var(--warn)}
+.prominence.low{color:var(--text-faint)}
+
+/* Bar */
+.bar-track{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;flex:1}
+.bar-fill{height:100%;border-radius:3px;transition:width .3s ease}
+.bar-good{background:var(--success)}
+.bar-warn{background:var(--warn)}
+.bar-over{background:var(--danger)}
+.bar-low{background:var(--info)}
+.bar-sparse{background:var(--text-faint)}
+
+/* Legend */
+.legend{display:flex;gap:12px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface2)}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-muted)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+
+/* Send to WC */
+.send-btn{padding:6px 14px;border-radius:var(--radius-xs);font-size:12px;font-weight:600;font-family:var(--font);cursor:pointer;border:1px solid var(--accent);background:var(--accent-dim);color:var(--accent);transition:all var(--ease);display:flex;align-items:center;gap:5px}
+.send-btn:hover{background:var(--accent);color:#fff}
+
+/* Empty state */
+.empty-state{padding:48px 24px;text-align:center;color:var(--text-faint)}
+.empty-icon{width:40px;height:40px;margin:0 auto 12px;opacity:.4}
+.empty-title{font-size:15px;font-weight:600;margin-bottom:6px;color:var(--text-muted)}
+.empty-sub{font-size:13px}
+
+/* Sort controls */
+.sort-row{display:flex;align-items:center;gap:8px}
+.sort-label{font-size:11px;color:var(--text-faint);font-weight:600}
+.sort-btn{padding:4px 10px;border-radius:var(--radius-xs);font-size:11px;font-weight:600;font-family:var(--font);cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-muted);transition:all var(--ease)}
+.sort-btn.active{background:var(--surface2);color:var(--text);border-color:var(--border2)}
+.sort-btn:hover{color:var(--text)}
+
+footer{border-top:1px solid var(--border);padding:20px 28px;text-align:center;font-size:13px;color:var(--text-faint)}
+.logo-text{color:var(--text-muted);font-weight:600}
+.logo-dot{color:var(--accent);font-weight:600}
+
+@media(max-width:700px){
+  .results-header,.result-row{grid-template-columns:1fr 60px 70px 80px 80px}
+  .header{padding:0 16px}.tagline{display:none}
+  main{padding:28px 16px 60px}
+  .summary-val{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="/" class="logo">zink<span>.</span></a>
+  <div class="header-right">
+    <a href="/" class="back-link">← All Tools</a>
+    <span class="tagline">free tools · no login · no data collected</span>
+    <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
+      <svg id="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg id="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-header">
+    <h1 class="tool-title">Keyword Density</h1>
+    <p class="tool-subtitle">Analyse keyword frequency, density and prominence in any text. Paste or upload — results in seconds.</p>
+  </div>
+
+  <!-- Input card -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-label-row">
+      <span class="card-label">Input</span>
+      <button class="clear-btn" id="clear-btn">Clear</button>
+    </div>
+    <textarea class="input-area" id="input-text" placeholder="Paste your text, product listing, article or any content here..." spellcheck="false"></textarea>
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" id="file-input" accept=".txt,.html,.htm,.csv" />
+      <div class="upload-zone-text">
+        or <span>upload a file</span> — .txt, .html, .csv supported
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-row">
+      <div class="toggle-group">
+        <button class="toggle-btn active" data-mode="1">1-word</button>
+        <button class="toggle-btn" data-mode="2">2-word</button>
+        <button class="toggle-btn" data-mode="3">3-word</button>
+      </div>
+      <span class="target-label">Target keyword:</span>
+      <div class="target-wrap">
+        <input class="target-input" id="target-keyword" type="text" placeholder="e.g. high waist jeans" />
+      </div>
+      <button class="analyse-btn" id="analyse-btn">Analyse →</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results-container">
+    <div class="card">
+      <div class="empty-state">
+        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6M8 11h6"/></svg>
+        <div class="empty-title">Paste your text above and click Analyse</div>
+        <div class="empty-sub">Supports single words, 2-word and 3-word phrases with density scoring</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer><span class="logo-text">zink</span><span class="logo-dot">.</span> &nbsp;·&nbsp; Free tools. No login. No data collected.</footer>
+
+<script>
+// ── Theme ────────────────────────────────────────────────
+const root=document.documentElement,themeBtn=document.getElementById('theme-btn'),sunIcon=document.getElementById('icon-sun'),moonIcon=document.getElementById('icon-moon');
+function applyTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('zink-theme',t)}catch(e){}sunIcon.style.display=t==='dark'?'block':'none';moonIcon.style.display=t==='light'?'block':'none';}
+const saved=()=>{try{return localStorage.getItem('zink-theme')}catch(e){return null}};
+applyTheme(saved()||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+themeBtn.addEventListener('click',()=>applyTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+
+// ── Stopwords ─────────────────────────────────────────────
+const SW=new Set(['a','about','above','after','again','against','all','am','an','and','any','are','as','at','be','because','been','before','being','below','between','both','but','by','can','did','do','does','doing','down','during','each','few','for','from','further','get','got','had','has','have','having','he','her','here','hers','herself','him','himself','his','how','i','if','in','into','is','it','its','itself','just','me','more','most','my','myself','no','nor','not','now','of','off','on','once','only','or','other','our','ours','out','over','own','s','same','she','should','so','some','such','t','than','that','the','their','theirs','them','then','there','these','they','this','those','through','to','too','under','until','up','us','very','was','we','were','what','when','where','which','while','who','whom','why','will','with','you','your','yours']);
+
+function isStopword(w){return SW.has(w.toLowerCase().replace(/[^a-z]/g,''));}
+
+// ── Text cleaning ─────────────────────────────────────────
+function cleanWord(w){return w.toLowerCase().replace(/[^a-z0-9\-']/g,'').replace(/^[-']+|[-']+$/g,'');}
+
+function getWords(text){
+  return text.split(/\s+/).map(cleanWord).filter(w=>w.length>1);
+}
+
+// ── Phrase extraction ─────────────────────────────────────
+function extractPhrases(text, n){
+  const words=getWords(text);
+  const freq={};
+  const positions={};
+
+  for(let i=0;i<=words.length-n;i++){
+    const slice=words.slice(i,i+n);
+    // Filter: all words must be non-stopwords and non-empty
+    if(slice.some(w=>!w||isStopword(w)||w.length<2))continue;
+    const phrase=slice.join(' ');
+    freq[phrase]=(freq[phrase]||0)+1;
+    if(!positions[phrase])positions[phrase]=[];
+    positions[phrase].push(i);
+  }
+
+  return{freq,positions,total:words.length};
+}
+
+// ── Prominence scoring ────────────────────────────────────
+// Based on first occurrence position relative to total text length
+function getProminence(positions,totalWords){
+  if(!positions||!positions.length)return'low';
+  const firstPos=Math.min(...positions);
+  const pct=firstPos/totalWords;
+  if(pct<0.1)return'high';
+  if(pct<0.35)return'medium';
+  return'low';
+}
+
+// ── Density signal ────────────────────────────────────────
+function getDensityClass(pct){
+  if(pct<0.5)return'sparse';
+  if(pct<1)return'low';
+  if(pct<=3)return'good';
+  if(pct<=5)return'warn';
+  return'over';
+}
+
+function getDensityLabel(pct){
+  if(pct<0.5)return'Sparse';
+  if(pct<1)return'Could be stronger';
+  if(pct<=3)return'Ideal range';
+  if(pct<=5)return'Over-optimised';
+  return'Keyword stuffing';
+}
+
+// ── Sort state ────────────────────────────────────────────
+let sortBy='count'; // count | density | prominence
+let activeMode=1;
+let lastResults=null;
+let lastTotal=0;
+
+// ── Main analyse ──────────────────────────────────────────
+function analyse(){
+  const text=document.getElementById('input-text').value.trim();
+  if(!text){return;}
+  const target=document.getElementById('target-keyword').value.trim().toLowerCase();
+  const {freq,positions,total}=extractPhrases(text,activeMode);
+  lastTotal=total;
+
+  const items=Object.entries(freq)
+    .filter(([,c])=>c>0)
+    .map(([phrase,count])=>{
+      const density=(count/total)*100;
+      const prominence=getProminence(positions[phrase],total);
+      return{phrase,count,density,prominence};
+    });
+
+  lastResults={items,target,total};
+  renderResults(items,target,total);
+}
+
+function sortResults(items){
+  const pOrder={high:3,medium:2,low:1};
+  if(sortBy==='density')return[...items].sort((a,b)=>b.density-a.density);
+  if(sortBy==='prominence')return[...items].sort((a,b)=>(pOrder[b.prominence]||0)-(pOrder[a.prominence]||0));
+  return[...items].sort((a,b)=>b.count-a.count);
+}
+
+function renderResults(items,target,total){
+  const container=document.getElementById('results-container');
+  if(!items.length){
+    container.innerHTML=`<div class="card"><div class="empty-state"><div class="empty-title">No keywords found</div><div class="empty-sub">Try lowering the phrase length or adding more text.</div></div></div>`;
+    return;
+  }
+
+  const sorted=sortResults(items);
+  const maxCount=sorted[0]?.count||1;
+  const topKw=sorted[0];
+  const unique=items.length;
+  const inRange=items.filter(i=>i.density>=1&&i.density<=3).length;
+
+  // Summary stats
+  const summaryHTML=`
+    <div class="summary-strip">
+      <div class="summary-stat"><div class="summary-val">${total.toLocaleString()}</div><div class="summary-lbl">Total words</div></div>
+      <div class="summary-stat"><div class="summary-val">${unique.toLocaleString()}</div><div class="summary-lbl">Unique phrases</div></div>
+      <div class="summary-stat"><div class="summary-val" style="color:var(--accent)">${topKw?.phrase||'—'}</div><div class="summary-lbl">Top keyword</div></div>
+      <div class="summary-stat"><div class="summary-val" style="color:var(--success)">${topKw?topKw.density.toFixed(1)+'%':'—'}</div><div class="summary-lbl">Top density</div></div>
+      <div class="summary-stat"><div class="summary-val">${inRange}</div><div class="summary-lbl">In ideal range</div></div>
+    </div>`;
+
+  // Sort controls + send to WC
+  const controlsHTML=`
+    <div class="card-label-row">
+      <div class="sort-row">
+        <span class="sort-label">Sort by:</span>
+        <button class="sort-btn${sortBy==='count'?' active':''}" onclick="setSort('count')">Count</button>
+        <button class="sort-btn${sortBy==='density'?' active':''}" onclick="setSort('density')">Density</button>
+        <button class="sort-btn${sortBy==='prominence'?' active':''}" onclick="setSort('prominence')">Prominence</button>
+      </div>
+      <button class="send-btn" onclick="sendToWordCounter()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Analyse in Word Counter
+      </button>
+    </div>`;
+
+  // Table rows
+  const rowsHTML=sorted.map(item=>{
+    const dc=getDensityClass(item.density);
+    const barClass=dc==='sparse'?'bar-sparse':dc==='low'?'bar-low':dc==='good'?'bar-good':dc==='warn'?'bar-warn':'bar-over';
+    const barWidth=Math.min((item.count/maxCount)*100,100);
+    const isTarget=target&&item.phrase.includes(target);
+    const pClass=item.prominence==='high'?'high':item.prominence==='medium'?'medium':'low';
+
+    return`<div class="result-row${isTarget?' highlighted':''}">
+      <span class="kw-text${isTarget?' target-match':''}">${item.phrase}${isTarget?' ★':''}</span>
+      <span class="kw-count">${item.count}</span>
+      <span><span class="density-badge density-${dc}">${item.density.toFixed(2)}%</span></span>
+      <span class="prominence ${pClass}">${item.prominence.charAt(0).toUpperCase()+item.prominence.slice(1)}</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div class="bar-track"><div class="bar-fill ${barClass}" style="width:${barWidth}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Legend
+  const legendHTML=`
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#94a3b8"></span>Sparse &lt;0.5%</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--info)"></span>Low 0.5–1%</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--success)"></span>Ideal 1–3%</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--warn)"></span>High 3–5%</span>
+      <span class="legend-item"><span class="legend-dot" style="background:var(--danger)"></span>Over &gt;5%</span>
+      ${target?`<span class="legend-item" style="margin-left:auto"><span style="color:var(--accent)">★</span> Target keyword match</span>`:''}
+    </div>`;
+
+  const headerHTML=`
+    <div class="results-header">
+      <span>Keyword / Phrase</span>
+      <span style="text-align:center">Count</span>
+      <span>Density</span>
+      <span>Prominence</span>
+      <span>Frequency</span>
+    </div>`;
+
+  container.innerHTML=summaryHTML+`<div class="card">${controlsHTML}${headerHTML}${rowsHTML}${legendHTML}</div>`;
+}
+
+function setSort(by){
+  sortBy=by;
+  if(lastResults)renderResults(lastResults.items,lastResults.target,lastResults.total);
+}
+
+function sendToWordCounter(){
+  const text=document.getElementById('input-text').value.trim();
+  if(!text)return;
+  try{sessionStorage.setItem('zink-wc-text',text);sessionStorage.setItem('zink-wc-platform','');sessionStorage.setItem('zink-wc-source','Keyword Density');}catch(e){}
+  window.location.href='word-counter.html';
+}
+
+// ── Events ────────────────────────────────────────────────
+document.getElementById('analyse-btn').addEventListener('click',analyse);
+document.getElementById('input-text').addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();analyse();}
+});
+document.getElementById('clear-btn').addEventListener('click',()=>{
+  document.getElementById('input-text').value='';
+  document.getElementById('target-keyword').value='';
+  document.getElementById('results-container').innerHTML=`<div class="card"><div class="empty-state"><svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6M8 11h6"/></svg><div class="empty-title">Paste your text above and click Analyse</div><div class="empty-sub">Supports single words, 2-word and 3-word phrases with density scoring</div></div></div>`;
+  lastResults=null;
+});
+
+document.querySelectorAll('.toggle-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeMode=parseInt(btn.dataset.mode);
+    if(lastResults)analyse();
+  });
+});
+
+// File upload
+const fileInput=document.getElementById('file-input');
+const uploadZone=document.getElementById('upload-zone');
+uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.classList.add('drag-over');});
+uploadZone.addEventListener('dragleave',()=>uploadZone.classList.remove('drag-over'));
+uploadZone.addEventListener('drop',e=>{
+  e.preventDefault();uploadZone.classList.remove('drag-over');
+  const file=e.dataTransfer.files[0];if(file)loadFile(file);
+});
+fileInput.addEventListener('change',e=>{if(e.target.files[0])loadFile(e.target.files[0]);});
+
+function loadFile(file){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    let text=e.target.result;
+    // Strip HTML tags if .html file
+    if(file.name.endsWith('.html')||file.name.endsWith('.htm')){
+      const d=document.createElement('div');d.innerHTML=text;text=d.innerText;
+    }
+    document.getElementById('input-text').value=text;
+    uploadZone.querySelector('.upload-zone-text').innerHTML=`<span style="color:var(--success)">✓ ${file.name} loaded</span> — <span style="color:var(--accent);cursor:pointer" onclick="document.getElementById('file-input').click()">change file</span>`;
+  };
+  reader.readAsText(file);
+}
+</script>
+</body>
+</html>
