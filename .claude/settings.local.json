@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find \"/c/Users/USER/Downloads/Personal Projects/zink\" -type f \\\\\\( -name \"*.js\" -o -name \"*.css\" -o -name \"*.html\" \\\\\\) ! -path \"*/.git/*\" -exec wc -l {} +)"
+    ]
+  }
+}
