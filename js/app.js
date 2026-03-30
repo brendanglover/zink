@@ -38,13 +38,14 @@ const STYLES = [
 
 // ── Element refs ──────────────────────────────────────────────────────────────
 
-const inputEl   = document.getElementById('input-text');
-const outputEl  = document.getElementById('output-text');
-const copyBtn   = document.getElementById('copy-btn');
-const clearBtn  = document.getElementById('clear-btn');
-const wordCount = document.getElementById('word-count');
-const descName  = document.getElementById('style-desc-name');
-const descText  = document.getElementById('style-desc-text');
+const inputEl    = document.getElementById('input-text');
+const outputEl   = document.getElementById('output-text');
+const copyBtn    = document.getElementById('copy-btn');
+const clearBtn   = document.getElementById('clear-btn');
+const analyseBtn = document.getElementById('analyse-btn');
+const wordCount  = document.getElementById('word-count');
+const descName   = document.getElementById('style-desc-name');
+const descText   = document.getElementById('style-desc-text');
 
 // ── Core update ───────────────────────────────────────────────────────────────
 
@@ -56,10 +57,12 @@ function updateOutput() {
     outputEl.textContent = result;
     outputEl.classList.add('has-content');
     copyBtn.disabled = false;
+    analyseBtn.disabled = false;
   } else {
     outputEl.textContent = 'Your converted title will appear here...';
     outputEl.classList.remove('has-content');
     copyBtn.disabled = true;
+    analyseBtn.disabled = true;
   }
 
   const words = raw.trim() ? raw.trim().split(/\s+/).filter(Boolean).length : 0;
@@ -126,6 +129,16 @@ function fallbackCopy(text, cb) {
   cb();
 }
 
+// ── Analyse in Word Counter ───────────────────────────────────────────────────
+
+function sendToWordCounter() {
+  if (!outputEl.classList.contains('has-content')) return;
+  sessionStorage.setItem('zink-wc-text', outputEl.textContent);
+  sessionStorage.setItem('zink-wc-platform', '');
+  sessionStorage.setItem('zink-wc-source', 'Title Capitaliser');
+  window.location.href = 'word-counter.html';
+}
+
 // ── Event listeners ───────────────────────────────────────────────────────────
 
 inputEl.addEventListener('input', updateOutput);
@@ -135,6 +148,7 @@ inputEl.addEventListener('keydown', (e) => {
 clearBtn.addEventListener('click', () => { inputEl.value = ''; updateOutput(); inputEl.focus(); });
 copyBtn.addEventListener('click', doCopy);
 outputEl.addEventListener('click', doCopy);
+analyseBtn.addEventListener('click', sendToWordCounter);
 
 document.querySelectorAll('.style-tab').forEach(b =>
   b.addEventListener('click', () => setStyle(b.dataset.style)));

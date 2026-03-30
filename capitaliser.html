@@ -29,6 +29,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/main.css" />
+  <style>
+    .analyse-btn { padding: 5px 12px; border-radius: var(--radius-xs); font-size: 12px; font-weight: 600; font-family: var(--font); cursor: pointer; border: 1px solid var(--accent-hover); background: var(--accent-dim); color: var(--accent); transition: all var(--ease); display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .analyse-btn:hover:not(:disabled) { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .analyse-btn:disabled { opacity: 0.4; cursor: default; }
+    .analyse-btn svg { flex-shrink: 0; }
+  </style>
 </head>
 <body>
 
@@ -113,6 +119,7 @@
           <span class="word-count" id="word-count">0 words · 0 chars</span>
           <span style="font-size:11px;color:var(--text-faint);margin-right:4px" title="Keyboard shortcut to copy">Ctrl+Enter to copy</span>
           <button class="copy-btn" id="copy-btn" disabled>Copy</button>
+          <button class="analyse-btn" id="analyse-btn" disabled><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Analyse in Word Counter</button>
         </div>
       </div>
       <div id="output-text" aria-live="polite">

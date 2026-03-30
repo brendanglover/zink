@@ -281,6 +281,7 @@
     'amz-bullet':  'Amazon Bullet Point limit pre-selected',
     'amz-backend': 'Amazon Backend Keywords limit pre-selected',
     'amz-desc':    'Amazon Description limit pre-selected',
+    '':            'Select a platform limit above',
   };
 
   const STOPWORDS=new Set(['the','a','an','and','or','but','in','on','at','to','for','of','with','by','from','is','are','was','were','be','been','being','have','has','had','do','does','did','will','would','could','should','may','might','it','its','this','that','these','those','i','you','he','she','we','they','my','your','his','her','our','their','not','so','if','as','up','out','about','what','which','who','when','where','how','all','just','more','also','than','then','into','over','after','before','very','can','no']);
@@ -371,12 +372,17 @@
       const source=sessionStorage.getItem('zink-wc-source');
       if(text){
         inputEl.value=text;
-        if(platform){
-          selectPlatform(platform);
+        if(platform!==null){
           const strip=document.getElementById('context-strip');
           strip.style.display='flex';
-          document.getElementById('context-title').textContent='Sent from Listing Builder — '+source;
-          document.getElementById('context-sub').textContent=PLATFORM_NAMES[platform]||'Platform limit pre-selected';
+          if(platform){
+            selectPlatform(platform);
+            document.getElementById('context-title').textContent='Sent from Listing Builder — '+source;
+            document.getElementById('context-sub').textContent=PLATFORM_NAMES[platform]||'Platform limit pre-selected';
+          } else {
+            document.getElementById('context-title').textContent='Sent from '+source+' — Title';
+            document.getElementById('context-sub').textContent=PLATFORM_NAMES[''];
+          }
         }
         sessionStorage.removeItem('zink-wc-text');
         sessionStorage.removeItem('zink-wc-platform');
