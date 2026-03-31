@@ -163,3 +163,32 @@ document.querySelectorAll('.ref-card').forEach(c =>
 
 setStyle('APA');
 setMode('title');
+
+// ── Check for incoming data from YouTube Title Optimiser ──────────────────────
+
+(function checkIncoming() {
+  try {
+    const text   = sessionStorage.getItem('zink-cap-text');
+    const source = sessionStorage.getItem('zink-cap-source');
+    if (text) {
+      inputEl.value = text;
+      const strip = document.getElementById('context-strip');
+      if (strip) {
+        strip.style.display = 'flex';
+        const titleEl = document.getElementById('context-title');
+        const subEl   = document.getElementById('context-sub');
+        if (titleEl) titleEl.textContent = 'Sent from ' + (source || 'YouTube Title Optimiser');
+        if (subEl)   subEl.textContent   = 'Text loaded — pick your style above';
+      }
+      sessionStorage.removeItem('zink-cap-text');
+      sessionStorage.removeItem('zink-cap-source');
+      updateOutput();
+    }
+  } catch(e) {}
+  const dismissBtn = document.getElementById('context-dismiss');
+  if (dismissBtn) {
+    dismissBtn.addEventListener('click', () => {
+      document.getElementById('context-strip').style.display = 'none';
+    });
+  }
+})();

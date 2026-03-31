@@ -34,6 +34,15 @@
     .analyse-btn:hover:not(:disabled) { background: var(--accent); color: #fff; border-color: var(--accent); }
     .analyse-btn:disabled { opacity: 0.4; cursor: default; }
     .analyse-btn svg { flex-shrink: 0; }
+    /* Context strip */
+    .context-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--accent-dim);border:1px solid rgba(99,102,241,0.3);border-radius:var(--radius-sm);margin-bottom:20px;animation:slideIn 0.25s ease}
+    @keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .context-left{display:flex;align-items:center;gap:10px}
+    .context-icon{width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .context-title{font-size:13px;font-weight:700;color:var(--text)}
+    .context-sub{font-size:12px;color:var(--text-muted)}
+    .context-dismiss{background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:20px;line-height:1;padding:4px 6px;border-radius:4px;transition:color var(--ease);font-family:var(--font)}
+    .context-dismiss:hover{color:var(--text)}
   </style>
 </head>
 <body>
@@ -64,6 +73,20 @@
 
   <!-- ── Main ───────────────────────────────────────────── -->
   <main>
+
+    <!-- Context strip — shown when arriving from YouTube Title Optimiser -->
+    <div class="context-strip" id="context-strip" style="display:none">
+      <div class="context-left">
+        <div class="context-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div>
+          <div class="context-title" id="context-title">Sent from YouTube Title Optimiser</div>
+          <div class="context-sub" id="context-sub">Text loaded — pick your style above</div>
+        </div>
+      </div>
+      <button class="context-dismiss" id="context-dismiss" aria-label="Dismiss">×</button>
+    </div>
 
     <div class="tool-header">
       <h1 class="tool-title">Title Capitaliser</h1>

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free YouTube title optimiser. Score your title against 7 best-practice checks instantly. Character count, keyword placement, power words, preview mock-up. No login, no data collected." />
+  <meta name="robots" content="index, follow" />
+  <title>Free YouTube Title Optimiser — Score &amp; Preview | zink.</title>
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://gotzink.com/youtube-title.html" />
+  <meta property="og:title" content="Free YouTube Title Optimiser — Score &amp; Preview" />
+  <meta property="og:description" content="Score your YouTube title against 7 best-practice checks instantly. Character count, keyword placement, power words, live preview mock-up. Free, no login." />
+  <meta property="og:image" content="https://gotzink.com/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free YouTube Title Optimiser — Score &amp; Preview | zink." />
+  <meta name="twitter:description" content="Score your YouTube title against 7 best-practice checks instantly. Free, no login, no data collected." />
+  <meta name="twitter:image" content="https://gotzink.com/og-image.svg" />
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XY13QWYYQ4"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XY13QWYYQ4');</script>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;
+  --border:#2a2d3a;--border2:#363a50;
+  --text:#f0f0f5;--text-muted:#8b8fa8;--text-faint:#4a4e68;
+  --accent:#6366f1;--accent-dim:rgba(99,102,241,0.12);
+  --success:#22c55e;--success-dim:rgba(34,197,94,0.1);
+  --warn:#fbbf24;--warn-dim:rgba(251,191,36,0.1);
+  --danger:#ef4444;--danger-dim:rgba(239,68,68,0.1);
+  --radius:12px;--radius-sm:8px;--radius-xs:6px;
+  --font:'Outfit',sans-serif;--ease:0.16s ease;
+}
+[data-theme="light"]{
+  --bg:#f4f5f9;--surface:#fff;--surface2:#eef0f7;
+  --border:#e2e4ed;--border2:#cdd0e0;
+  --text:#111827;--text-muted:#6b7280;--text-faint:#b0b4c8;
+  --accent-dim:rgba(99,102,241,0.08);
+  --success-dim:rgba(34,197,94,0.08);
+  --warn-dim:rgba(251,191,36,0.08);
+  --danger-dim:rgba(239,68,68,0.08);
+}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;transition:background var(--ease),color var(--ease);line-height:1.6}
+::selection{background:var(--accent);color:#fff}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+.header{height:58px;padding:0 28px;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
+.logo{font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--text);text-decoration:none}
+.logo span{color:var(--accent)}
+.header-right{display:flex;align-items:center;gap:14px}
+.back-link{font-size:13px;font-weight:600;color:var(--text-muted);text-decoration:none;transition:color var(--ease)}
+.back-link:hover{color:var(--text)}
+.tagline{font-size:12px;color:var(--text-faint);font-weight:500}
+.theme-btn{width:36px;height:36px;border-radius:var(--radius-sm);background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background var(--ease),color var(--ease)}
+.theme-btn:hover{background:var(--border);color:var(--text)}
+
+main{flex:1;max-width:860px;margin:0 auto;width:100%;padding:44px 24px 80px}
+.tool-header{margin-bottom:32px}
+.tool-title{font-size:26px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px}
+.tool-subtitle{font-size:15px;color:var(--text-muted)}
+
+/* Score hero */
+.score-hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;display:flex;align-items:center;gap:24px}
+.score-circle{width:88px;height:88px;border-radius:50%;border:4px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;transition:border-color var(--ease);position:relative}
+.score-num{font-size:30px;font-weight:700;letter-spacing:-.5px;line-height:1;transition:color var(--ease)}
+.score-denom{font-size:12px;color:var(--text-faint);font-weight:600}
+.score-right{flex:1;min-width:0}
+.score-label{font-size:18px;font-weight:700;margin-bottom:8px;transition:color var(--ease)}
+.score-bar-track{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.score-bar-fill{height:100%;border-radius:4px;transition:width .4s ease,background .4s ease}
+.score-tip{font-size:13px;color:var(--text-muted)}
+
+/* Colours by state */
+.state-needs .score-num,.state-needs .score-label{color:var(--danger)}
+.state-needs .score-circle{border-color:var(--danger)}
+.state-needs .score-bar-fill{background:var(--danger)}
+.state-getting .score-num,.state-getting .score-label{color:var(--warn)}
+.state-getting .score-circle{border-color:var(--warn)}
+.state-getting .score-bar-fill{background:var(--warn)}
+.state-strong .score-num,.state-strong .score-label{color:var(--accent)}
+.state-strong .score-circle{border-color:var(--accent)}
+.state-strong .score-bar-fill{background:var(--accent)}
+.state-optimised .score-num,.state-optimised .score-label{color:var(--success)}
+.state-optimised .score-circle{border-color:var(--success)}
+.state-optimised .score-bar-fill{background:var(--success)}
+
+/* Card */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.card-label-row{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;min-height:42px}
+.card-label{font-size:11px;font-weight:700;color:var(--text-faint);letter-spacing:.1em;text-transform:uppercase}
+
+/* Title input */
+.title-input-wrap{padding:16px;position:relative}
+.title-input{width:100%;padding:12px 14px;background:var(--surface2);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.5;border:1px solid var(--border);border-radius:var(--radius-sm);transition:border-color var(--ease);resize:none}
+.title-input:focus{outline:none;border-color:var(--accent)}
+.title-input::placeholder{color:var(--text-faint)}
+
+/* Char meter */
+.char-meter-wrap{padding:0 16px 16px}
+.char-meter-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.char-count-display{font-size:13px;font-weight:700;color:var(--text)}
+.char-limit-labels{display:flex;gap:16px}
+.char-limit-label{font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px}
+.char-limit-dot{width:8px;height:8px;border-radius:50%}
+.char-track{height:8px;background:var(--surface2);border-radius:4px;overflow:visible;position:relative;margin-bottom:4px}
+.char-fill{height:100%;border-radius:4px;transition:width .15s ease,background .15s ease;max-width:100%}
+.char-marker{position:absolute;top:-3px;width:2px;height:14px;border-radius:1px;transform:translateX(-50%)}
+.char-marker-desktop{background:#fbbf24}
+.char-marker-mobile{background:#f97316}
+
+/* Two-col row */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+
+/* Keyword input */
+.input-field{width:100%;padding:9px 12px;background:var(--surface2);color:var(--text);font-family:var(--font);font-size:13px;border:1px solid var(--border);border-radius:var(--radius-sm);transition:border-color var(--ease)}
+.input-field:focus{outline:none;border-color:var(--accent)}
+.input-field::placeholder{color:var(--text-faint)}
+.field-label{font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:6px;display:block}
+
+/* Fix capitalisation btn */
+.fix-cap-btn{width:100%;padding:9px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;border:1px solid var(--accent);background:var(--accent-dim);color:var(--accent);transition:all var(--ease);display:flex;align-items:center;justify-content:center;gap:6px}
+.fix-cap-btn:hover{background:var(--accent);color:#fff}
+.fix-cap-btn:disabled{opacity:.35;cursor:default;pointer-events:none}
+
+/* Checks list */
+.checks-list{padding:8px 0}
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);transition:background var(--ease)}
+.check-item:last-child{border-bottom:none}
+.check-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:12px;font-weight:700;transition:all var(--ease)}
+.check-icon.pass{background:var(--success-dim);color:var(--success)}
+.check-icon.fail{background:var(--danger-dim);color:var(--danger)}
+.check-icon.warn{background:var(--warn-dim);color:var(--warn)}
+.check-icon.na{background:var(--surface2);color:var(--text-faint)}
+.check-text{flex:1}
+.check-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.check-tip{font-size:12px;color:var(--text-muted);line-height:1.5}
+
+/* Preview toggle */
+.preview-toggle{display:flex;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:3px}
+.preview-tab{padding:5px 14px;border-radius:var(--radius-xs);font-size:12px;font-weight:600;font-family:var(--font);cursor:pointer;border:none;background:transparent;color:var(--text-muted);transition:all var(--ease)}
+.preview-tab.active{background:var(--accent);color:#fff}
+
+/* YouTube desktop search mock */
+.yt-desktop-card{background:#0f0f0f;border-radius:8px;padding:16px;font-family:'Roboto','Arial',sans-serif}
+[data-theme="light"] .yt-desktop-card{background:#f9f9f9}
+.yt-desktop-inner{display:flex;gap:16px;max-width:600px}
+.yt-thumb{width:168px;height:94px;border-radius:4px;background:#272727;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+[data-theme="light"] .yt-thumb{background:#ccc}
+.yt-thumb-icon{color:#555;font-size:24px}
+.yt-duration{position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.8);color:#fff;font-size:11px;font-weight:600;padding:1px 4px;border-radius:2px;font-family:'Roboto',sans-serif}
+.yt-meta{flex:1;min-width:0}
+.yt-title-text{font-size:14px;font-weight:500;line-height:1.4;color:#f1f1f1;margin-bottom:6px;word-break:break-word}
+[data-theme="light"] .yt-title-text{color:#0f0f0f}
+.yt-title-truncated{color:#aaa}
+[data-theme="light"] .yt-title-truncated{color:#606060}
+.yt-channel{font-size:12px;color:#aaa;margin-bottom:2px}
+[data-theme="light"] .yt-channel{color:#606060}
+.yt-stats{font-size:12px;color:#aaa}
+[data-theme="light"] .yt-stats{color:#606060}
+.yt-cutoff-label{font-size:11px;color:var(--warn);font-weight:600;margin-top:8px;display:flex;align-items:center;gap:4px}
+
+/* YouTube mobile sidebar mock */
+.yt-sidebar-card{background:#0f0f0f;border-radius:8px;padding:12px;font-family:'Roboto','Arial',sans-serif}
+[data-theme="light"] .yt-sidebar-card{background:#f9f9f9}
+.yt-sidebar-inner{display:flex;gap:8px;align-items:flex-start}
+.yt-sidebar-thumb{width:120px;height:68px;border-radius:4px;background:#272727;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+[data-theme="light"] .yt-sidebar-thumb{background:#ccc}
+.yt-sidebar-meta{flex:1;min-width:0}
+.yt-sidebar-title{font-size:13px;font-weight:500;line-height:1.4;color:#f1f1f1;margin-bottom:4px;word-break:break-word}
+[data-theme="light"] .yt-sidebar-title{color:#0f0f0f}
+.yt-sidebar-channel{font-size:11px;color:#aaa}
+[data-theme="light"] .yt-sidebar-channel{color:#606060}
+
+/* Empty preview */
+.preview-empty{padding:32px;text-align:center;color:var(--text-faint);font-size:13px;font-style:italic}
+
+footer{border-top:1px solid var(--border);padding:20px 28px;text-align:center;font-size:13px;color:var(--text-faint)}
+.logo-text{color:var(--text-muted);font-weight:600}
+.logo-dot{color:var(--accent);font-weight:600}
+
+@media(max-width:600px){
+  .header{padding:0 16px}.tagline{display:none}
+  main{padding:28px 16px 60px}
+  .score-hero{flex-direction:column;align-items:flex-start;gap:16px}
+  .score-circle{width:72px;height:72px}
+  .score-num{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <a href="/" class="logo">zink<span>.</span></a>
+  <div class="header-right">
+    <a href="/" class="back-link">← All Tools</a>
+    <span class="tagline">free tools · no login · no data collected</span>
+    <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
+      <svg id="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg id="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-header">
+    <h1 class="tool-title">YouTube Title Optimiser</h1>
+    <p class="tool-subtitle">Type your title, see your score instantly. No AI, no account, no data collected.</p>
+  </div>
+
+  <!-- Score hero -->
+  <div class="score-hero" id="score-hero">
+    <div class="score-circle" id="score-circle">
+      <span class="score-num" id="score-num">—</span>
+      <span class="score-denom">/ 7</span>
+    </div>
+    <div class="score-right">
+      <div class="score-label" id="score-label">Start typing to see your score</div>
+      <div class="score-bar-track">
+        <div class="score-bar-fill" id="score-bar" style="width:0%"></div>
+      </div>
+      <div class="score-tip" id="score-tip">Enter your YouTube title below to get an instant optimisation score.</div>
+    </div>
+  </div>
+
+  <!-- Input card -->
+  <div class="card">
+    <div class="card-label-row">
+      <span class="card-label">Your title</span>
+      <span id="char-hard" style="font-size:12px;font-weight:700;color:var(--text-faint)">0 / 100</span>
+    </div>
+    <div class="title-input-wrap">
+      <textarea class="title-input" id="title-input" rows="2" placeholder="e.g. 5 Welding Mistakes Every Beginner Makes (And How to Fix Them)" spellcheck="false" maxlength="100"></textarea>
+    </div>
+    <div class="char-meter-wrap">
+      <div class="char-meter-row">
+        <span class="char-count-display" id="char-display">0 characters</span>
+        <div class="char-limit-labels">
+          <span class="char-limit-label"><span class="char-limit-dot" style="background:#fbbf24"></span>55 desktop</span>
+          <span class="char-limit-label"><span class="char-limit-dot" style="background:#f97316"></span>70 mobile</span>
+        </div>
+      </div>
+      <div class="char-track">
+        <div class="char-fill" id="char-fill" style="width:0%;background:var(--success)"></div>
+        <div class="char-marker char-marker-desktop" style="left:55%"></div>
+        <div class="char-marker char-marker-mobile" style="left:70%"></div>
+      </div>
+    </div>
+
+    <!-- Keyword + Fix cap row -->
+    <div style="padding:0 16px 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <label class="field-label" for="keyword-input">Target keyword (optional)</label>
+        <input class="input-field" id="keyword-input" type="text" placeholder="e.g. welding tips" />
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:flex-end">
+        <button class="fix-cap-btn" id="fix-cap-btn" disabled>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+          Fix Capitalisation →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checks -->
+  <div class="card">
+    <div class="card-label-row">
+      <span class="card-label">Score breakdown</span>
+    </div>
+    <div class="checks-list" id="checks-list">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div class="card">
+    <div class="card-label-row">
+      <span class="card-label">Live preview</span>
+      <div class="preview-toggle">
+        <button class="preview-tab active" id="tab-desktop" onclick="setPreviewTab('desktop')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;vertical-align:middle"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Desktop search
+        </button>
+        <button class="preview-tab" id="tab-mobile" onclick="setPreviewTab('mobile')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;vertical-align:middle"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          Mobile suggested
+        </button>
+      </div>
+    </div>
+    <div style="padding:16px" id="preview-area">
+      <div class="preview-empty">Type a title above to see how it looks on YouTube</div>
+    </div>
+  </div>
+
+</main>
+
+<footer><span class="logo-text">zink</span><span class="logo-dot">.</span> &nbsp;·&nbsp; Free tools. No login. No data collected.</footer>
+
+<script>
+// ── Theme ─────────────────────────────────────────────────
+const root=document.documentElement,themeBtn=document.getElementById('theme-btn'),sunIcon=document.getElementById('icon-sun'),moonIcon=document.getElementById('icon-moon');
+function applyTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('zink-theme',t)}catch(e){}sunIcon.style.display=t==='dark'?'block':'none';moonIcon.style.display=t==='light'?'block':'none';}
+const saved=()=>{try{return localStorage.getItem('zink-theme')}catch(e){return null}};
+applyTheme(saved()||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+themeBtn.addEventListener('click',()=>applyTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+
+// ── Power words ───────────────────────────────────────────
+const POWER_WORDS=new Set(['best','worst','secret','secrets','never','always','ultimate','proven','surprising','shocking','incredible','simple','easy','fast','quick','top','hidden','revealed','expose','exposed','why','warning','stop','avoid','discover','master','hack','hacks','mistake','mistakes','fix','honest','real','complete','perfect','every','only','first','last','biggest','new','free','essential','powerful','better','worse','truth','fails','fail','wins','win','breaks','break','saves','save','changes','change','kills','kill','grows','grow','builds','build','makes','makes','crushes','crush','dominates','dominate','beginners','beginner','advanced','pro','tips','tip','tricks','trick','guide','tutorial','review','vs','versus','actually','literally','insane','crazy','unbelievable','must','need','important','critical','dangerous','safe']);
+
+// ── Clickbait symbols ──────────────────────────────────────
+const CLICKBAIT_RE=/[★✓→←↑↓♦♥♠♣●■▲▼◆☆✔✅❌⚠🔥💥🎯🏆👇👆🚀💯😱🤯]/u;
+
+// ── Check state ────────────────────────────────────────────
+const CHECKS=[
+  {id:'length',  name:'Title length',         tip:''},
+  {id:'keyword', name:'Keyword in first 3 words', tip:''},
+  {id:'number',  name:'Contains a number',    tip:'Numbers set expectations and boost clicks (e.g. "5 Tips", "3 Mistakes").'},
+  {id:'power',   name:'Power / emotion word', tip:''},
+  {id:'caps',    name:'No all-caps words',    tip:'ALL CAPS words look spammy and can hurt click-through rate.'},
+  {id:'symbols', name:'No clickbait symbols', tip:'Symbols like ★ ✅ 🔥 make titles look low-quality in search results.'},
+  {id:'casing',  name:'Consistent casing',    tip:''},
+];
+
+let previewMode='desktop';
+
+function setPreviewTab(mode){
+  previewMode=mode;
+  document.getElementById('tab-desktop').classList.toggle('active',mode==='desktop');
+  document.getElementById('tab-mobile').classList.toggle('active',mode==='mobile');
+  renderPreview(document.getElementById('title-input').value);
+}
+
+// ── Core scoring ───────────────────────────────────────────
+function scoreTitle(title,keyword){
+  const t=title.trim();
+  const len=t.length;
+  const words=t.split(/\s+/).filter(Boolean);
+  const lc=t.toLowerCase();
+  const results={};
+
+  // 1. Length
+  if(len===0){results.length={pass:'na',tip:'Enter a title to check length.'};}
+  else if(len<=55){results.length={pass:'pass',tip:`${len} chars — fully visible on desktop and mobile. `};}
+  else if(len<=70){results.length={pass:'warn',tip:`${len} chars — visible on mobile but may truncate on desktop at 55 chars.`};}
+  else if(len<=100){results.length={pass:'fail',tip:`${len} chars — will be cut off on both desktop (55) and mobile (70). Shorten it.`};}
+  else{results.length={pass:'fail',tip:`${len} chars — over YouTube's 100 character hard limit.`};}
+
+  // 2. Keyword in first 3 words
+  if(!keyword){
+    results.keyword={pass:'na',tip:'Enter a target keyword above to check placement.'};
+  } else {
+    const first3=words.slice(0,3).join(' ').toLowerCase();
+    const kw=keyword.trim().toLowerCase();
+    const inFirst3=first3.includes(kw);
+    const inTitle=lc.includes(kw);
+    if(inFirst3){results.keyword={pass:'pass',tip:`"${keyword}" appears in the first 3 words — great for search visibility.`};}
+    else if(inTitle){results.keyword={pass:'warn',tip:`"${keyword}" is in the title but not in the first 3 words. Move it earlier for better SEO.`};}
+    else{results.keyword={pass:'fail',tip:`"${keyword}" not found in the title. Include your target keyword.`};}
+  }
+
+  // 3. Number
+  const hasNum=/\d/.test(t);
+  results.number={pass:hasNum?'pass':'fail',tip:hasNum?'Good — numbers in titles consistently improve click-through rates.':'Add a number (e.g. "5 Tips", "3 Mistakes") to set expectations and boost clicks.'};
+
+  // 4. Power word
+  const titleWords=t.toLowerCase().replace(/[^a-z\s]/g,' ').split(/\s+/);
+  const hasPower=titleWords.some(w=>POWER_WORDS.has(w));
+  results.power={pass:hasPower?'pass':'fail',tip:hasPower?'Great — your title has an emotional or power word.':'Add a power word like "best", "secret", "mistake", "ultimate" to increase appeal.'};
+
+  // 5. No all-caps
+  const capsWords=words.filter(w=>w.length>2&&w===w.toUpperCase()&&/[A-Z]/.test(w));
+  results.caps={pass:capsWords.length===0?'pass':'fail',tip:capsWords.length===0?'No all-caps words — looks clean and professional.':`Remove all-caps: ${capsWords.join(', ')}. Use sentence or title case instead.`};
+
+  // 6. No clickbait symbols
+  const hasSymbols=CLICKBAIT_RE.test(t);
+  results.symbols={pass:hasSymbols?'fail':'pass',tip:hasSymbols?'Remove clickbait symbols — they reduce perceived quality in search results.':'Clean — no clickbait symbols detected.'};
+
+  // 7. Consistent casing
+  if(words.length<2){
+    results.casing={pass:'na',tip:'Enter more words to check casing consistency.'};
+  } else {
+    const isTitleCase=words.every((w,i)=>{
+      if(w.length<=3&&i>0)return true; // allow short words lowercase
+      return w[0]===w[0].toUpperCase();
+    });
+    const isSentenceCase=words[0][0]===words[0][0].toUpperCase()&&words.slice(1).every(w=>w[0]===w[0].toLowerCase()||/^[A-Z][a-z]/.test(w)||w===w.toUpperCase());
+    const isRandom=!isTitleCase&&!isSentenceCase;
+    if(isTitleCase){results.casing={pass:'pass',tip:'Title Case detected — consistent and looks professional on YouTube.'};}
+    else if(isSentenceCase){results.casing={pass:'pass',tip:'Sentence case detected — clean and readable for YouTube titles.'};}
+    else{results.casing={pass:'fail',tip:'Casing looks inconsistent. Use either Title Case or Sentence case throughout.'};
+    }
+  }
+
+  return results;
+}
+
+function getScore(results){
+  let score=0;
+  Object.values(results).forEach(r=>{if(r.pass==='pass')score++;if(r.pass==='warn')score+=0.5;});
+  return Math.round(score);
+}
+
+function getState(score){
+  if(score<=2)return'needs';
+  if(score<=4)return'getting';
+  if(score<=6)return'strong';
+  return'optimised';
+}
+
+function getStateLabel(score){
+  if(score<=2)return'Needs Work';
+  if(score<=4)return'Getting There';
+  if(score<=6)return'Strong';
+  return'Optimised ✓';
+}
+
+function getStateTip(score,results){
+  const fails=Object.entries(results).filter(([,r])=>r.pass==='fail');
+  if(fails.length===0)return'Your title is fully optimised — great work!';
+  const firstFail=CHECKS.find(c=>results[c.id]?.pass==='fail');
+  return firstFail?`Next: ${results[firstFail.id].tip}`:'Keep improving your title.';
+}
+
+// ── Render ─────────────────────────────────────────────────
+function update(){
+  const title=document.getElementById('title-input').value;
+  const keyword=document.getElementById('keyword-input').value.trim();
+  const len=title.length;
+
+  // Hard char count
+  document.getElementById('char-hard').textContent=`${len} / 100`;
+  document.getElementById('char-display').textContent=`${len} character${len===1?'':'s'}`;
+
+  // Char bar
+  const pct=Math.min((len/100)*100,100);
+  const fill=document.getElementById('char-fill');
+  fill.style.width=pct+'%';
+  fill.style.background=len<=55?'var(--success)':len<=70?'var(--warn)':'var(--danger)';
+
+  // Fix cap button
+  document.getElementById('fix-cap-btn').disabled=!title.trim();
+
+  if(!title.trim()){
+    // Reset score hero
+    document.getElementById('score-num').textContent='—';
+    document.getElementById('score-label').textContent='Start typing to see your score';
+    document.getElementById('score-bar').style.width='0%';
+    document.getElementById('score-tip').textContent='Enter your YouTube title below to get an instant optimisation score.';
+    document.getElementById('score-hero').className='score-hero';
+    renderChecksEmpty();
+    renderPreview('');
+    return;
+  }
+
+  const results=scoreTitle(title,keyword);
+  const score=getScore(results);
+  const state=getState(score);
+
+  // Score hero
+  document.getElementById('score-num').textContent=score;
+  document.getElementById('score-label').textContent=getStateLabel(score);
+  document.getElementById('score-bar').style.width=((score/7)*100)+'%';
+  document.getElementById('score-tip').textContent=getStateTip(score,results);
+  document.getElementById('score-hero').className='score-hero state-'+state;
+
+  renderChecks(results);
+  renderPreview(title);
+}
+
+function renderChecksEmpty(){
+  const list=document.getElementById('checks-list');
+  list.innerHTML=CHECKS.map(c=>`
+    <div class="check-item">
+      <div class="check-icon na">—</div>
+      <div class="check-text">
+        <div class="check-name">${c.name}</div>
+        <div class="check-tip" style="color:var(--text-faint)">Enter a title to check this</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderChecks(results){
+  const list=document.getElementById('checks-list');
+  list.innerHTML=CHECKS.map(c=>{
+    const r=results[c.id]||{pass:'na',tip:''};
+    const icon=r.pass==='pass'?'✓':r.pass==='fail'?'✗':r.pass==='warn'?'~':'—';
+    return`<div class="check-item">
+      <div class="check-icon ${r.pass}">${icon}</div>
+      <div class="check-text">
+        <div class="check-name">${c.name}</div>
+        <div class="check-tip">${r.tip}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderPreview(title){
+  const area=document.getElementById('preview-area');
+  if(!title.trim()){
+    area.innerHTML='<div class="preview-empty">Type a title above to see how it looks on YouTube</div>';
+    return;
+  }
+
+  const DESKTOP_LIMIT=55;
+  const MOBILE_LIMIT=70;
+
+  if(previewMode==='desktop'){
+    const shown=title.length>DESKTOP_LIMIT?title.slice(0,DESKTOP_LIMIT)+'...':title;
+    const truncated=title.length>DESKTOP_LIMIT;
+    area.innerHTML=`
+      <div class="yt-desktop-card">
+        <div class="yt-desktop-inner">
+          <div class="yt-thumb">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5" class="yt-thumb-icon"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span class="yt-duration">12:34</span>
+          </div>
+          <div class="yt-meta">
+            <div class="yt-title-text">${escHtml(shown)}</div>
+            <div class="yt-channel">Your Channel · <span class="yt-stats">1.2K views · 2 days ago</span></div>
+          </div>
+        </div>
+        ${truncated?`<div class="yt-cutoff-label"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Title truncated at ${DESKTOP_LIMIT} chars on desktop search</div>`:'<div style="font-size:11px;color:var(--success);margin-top:8px;font-weight:600">✓ Full title visible on desktop</div>'}
+      </div>`;
+  } else {
+    const shown=title.length>MOBILE_LIMIT?title.slice(0,MOBILE_LIMIT)+'...':title;
+    const truncated=title.length>MOBILE_LIMIT;
+    area.innerHTML=`
+      <div class="yt-sidebar-card">
+        <div class="yt-sidebar-inner">
+          <div class="yt-sidebar-thumb">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span class="yt-duration" style="font-size:10px">12:34</span>
+          </div>
+          <div class="yt-sidebar-meta">
+            <div class="yt-sidebar-title">${escHtml(shown)}</div>
+            <div class="yt-sidebar-channel">Your Channel</div>
+            <div class="yt-sidebar-channel">1.2K views</div>
+          </div>
+        </div>
+        ${truncated?`<div class="yt-cutoff-label" style="margin-top:8px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Title truncated at ${MOBILE_LIMIT} chars on mobile</div>`:'<div style="font-size:11px;color:var(--success);margin-top:8px;font-weight:600">✓ Full title visible on mobile</div>'}
+      </div>`;
+  }
+}
+
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ── Fix capitalisation handoff ─────────────────────────────
+document.getElementById('fix-cap-btn').addEventListener('click',()=>{
+  const title=document.getElementById('title-input').value.trim();
+  if(!title)return;
+  try{
+    sessionStorage.setItem('zink-cap-text',title);
+    sessionStorage.setItem('zink-cap-source','YouTube Title Optimiser');
+  }catch(e){}
+  window.location.href='capitaliser.html';
+});
+
+// ── Events ─────────────────────────────────────────────────
+document.getElementById('title-input').addEventListener('input',update);
+document.getElementById('keyword-input').addEventListener('input',update);
+
+// ── Init ───────────────────────────────────────────────────
+renderChecksEmpty();
+</script>
+</body>
+</html>
