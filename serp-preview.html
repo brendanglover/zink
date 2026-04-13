@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free Google SERP preview tool. See exactly how your page title, meta description and URL look in Google search results. Colour-coded length checks. No login, no data collected." />
+  <meta name="robots" content="index, follow" />
+  <title>Free Google SERP Preview — Title & Meta Description Checker | zink.</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://gotzink.com/serp-preview.html" />
+  <meta property="og:title" content="Free Google SERP Preview — Title & Meta Description Checker" />
+  <meta property="og:description" content="See exactly how your page title, meta description and URL appear in Google search results. Colour-coded length indicators. Free, no login." />
+  <meta property="og:image" content="https://gotzink.com/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Google SERP Preview — Title & Meta Description Checker | zink." />
+  <meta name="twitter:description" content="Preview your Google search snippet instantly. Check title and meta description lengths. Free, no login." />
+  <meta name="twitter:image" content="https://gotzink.com/og-image.svg" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XY13QWYYQ4"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XY13QWYYQ4');</script>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    /* Fields */
+    .fields-grid{display:grid;gap:12px;margin-bottom:14px}
+    .field-group{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color var(--ease)}
+    .field-group:focus-within{border-color:var(--accent)}
+    .field-top{padding:10px 14px 0;display:flex;align-items:center;justify-content:space-between}
+    .field-lbl{font-size:11px;font-weight:700;color:var(--text-faint);letter-spacing:.08em;text-transform:uppercase}
+    .field-count{font-size:12px;font-weight:700;color:var(--text-faint);transition:color var(--ease)}
+    .field-count.ok{color:var(--success)}
+    .field-count.warn{color:var(--warn)}
+    .field-count.bad{color:var(--danger)}
+    .field-input{width:100%;padding:8px 14px 12px;background:transparent;color:var(--text);font-family:var(--font);font-size:15px;border:none;display:block;transition:color var(--ease)}
+    .field-input:focus{outline:none}
+    .field-input::placeholder{color:var(--text-faint)}
+    .field-bar{height:3px;background:var(--surface2);position:relative}
+    .field-bar-fill{height:100%;transition:width .15s ease,background .15s ease}
+    .field-bar-marker{position:absolute;top:0;height:100%;width:2px;background:var(--accent);opacity:.5}
+
+    /* SERP mock */
+    .serp-card{background:#fff;border-radius:10px;padding:20px 20px 22px;margin-bottom:14px;font-family:'Arial',sans-serif}
+    [data-theme="dark"] .serp-card{background:#202124}
+    .serp-site-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+    .serp-favicon{width:18px;height:18px;border-radius:50%;background:#e8eaed;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:700;color:#5f6368}
+    [data-theme="dark"] .serp-favicon{background:#3c4043;color:#bdc1c6}
+    .serp-domain{font-size:14px;color:#202124;line-height:1.3}
+    [data-theme="dark"] .serp-domain{color:#bdc1c6}
+    .serp-path{font-size:12px;color:#4d5156}
+    [data-theme="dark"] .serp-path{color:#9aa0a6}
+    .serp-kebab{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:default;flex-shrink:0;margin-left:auto}
+    .serp-kebab svg{color:#70757a}
+    .serp-title{font-size:20px;line-height:1.3;color:#1a0dab;margin-bottom:4px;word-break:break-word}
+    [data-theme="dark"] .serp-title{color:#8ab4f8}
+    .serp-title.truncated{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+    .serp-title-empty{font-size:20px;color:#9aa0a6;font-style:italic}
+    [data-theme="dark"] .serp-title-empty{color:#5f6368}
+    .serp-desc{font-size:14px;line-height:1.6;color:#4d5156;word-break:break-word}
+    [data-theme="dark"] .serp-desc{color:#bdc1c6}
+    .serp-desc.truncated{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .serp-desc-empty{font-size:14px;color:#9aa0a6;font-style:italic;line-height:1.6}
+    [data-theme="dark"] .serp-desc-empty{color:#5f6368}
+    .serp-empty-hint{text-align:center;padding:28px 16px;color:var(--text-faint);font-size:13px;font-style:italic}
+
+    /* Field checks */
+    .checks-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+    @media(max-width:520px){.checks-row{grid-template-columns:1fr}}
+    .check-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+    .check-box-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+    .check-pill{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.05em;text-transform:uppercase}
+    .check-pill.ok{background:var(--success-dim);color:var(--success)}
+    .check-pill.warn{background:var(--warn-dim);color:var(--warn)}
+    .check-pill.bad{background:var(--danger-dim);color:var(--danger)}
+    .check-pill.na{background:var(--surface2);color:var(--text-faint)}
+    .check-box-name{font-size:13px;font-weight:700;color:var(--text)}
+    .check-box-detail{font-size:12px;color:var(--text-muted);line-height:1.5}
+
+    /* Slug handoff */
+    .slug-row{margin-bottom:14px}
+    .slug-hint{font-size:12px;color:var(--text-faint);margin-bottom:8px}
+    .slug-output{padding:10px 14px;background:var(--surface2);border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--text-muted);font-family:monospace;word-break:break-all;min-height:38px;transition:color var(--ease)}
+    .slug-output.has-slug{color:var(--text)}
+
+    .actions-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+    .ghost-btn{padding:8px 16px;border-radius:var(--radius-xs);font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);transition:all var(--ease);text-decoration:none;display:inline-flex;align-items:center}
+    .ghost-btn:hover{border-color:var(--accent);color:var(--accent)}
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <a href="/" class="logo">zink<span>.</span></a>
+  <div class="header-right">
+    <a href="/" class="back-link">← All Tools</a>
+    <span class="tagline">free tools · no login · no data collected</span>
+    <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
+      <svg id="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg id="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-header">
+    <h1 class="tool-title">Google SERP Preview</h1>
+    <p class="tool-subtitle">See exactly how your page looks in Google search results before you publish.</p>
+  </div>
+
+  <!-- Fields -->
+  <div class="fields-grid">
+
+    <div class="field-group">
+      <div class="field-top">
+        <span class="field-lbl">Page Title</span>
+        <span class="field-count" id="title-count">0 / 60</span>
+      </div>
+      <input class="field-input" id="title-input" type="text" placeholder="e.g. How to Start Welding — Beginner's Complete Guide" maxlength="120" spellcheck="false" />
+      <div class="field-bar">
+        <div class="field-bar-fill" id="title-bar" style="width:0%;background:var(--text-faint)"></div>
+        <div class="field-bar-marker" style="left:83.3%"></div><!-- 50/60 -->
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-top">
+        <span class="field-lbl">Meta Description</span>
+        <span class="field-count" id="desc-count">0 / 160</span>
+      </div>
+      <input class="field-input" id="desc-input" type="text" placeholder="e.g. Everything a complete beginner needs to get started with welding — gear, techniques and safety tips." maxlength="300" spellcheck="false" />
+      <div class="field-bar">
+        <div class="field-bar-fill" id="desc-bar" style="width:0%;background:var(--text-faint)"></div>
+        <div class="field-bar-marker" style="left:84.4%"></div><!-- 135/160 -->
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-top">
+        <span class="field-lbl">Page URL</span>
+        <span style="font-size:11px;color:var(--text-faint)">used for breadcrumb display</span>
+      </div>
+      <input class="field-input" id="url-input" type="text" placeholder="e.g. yoursite.com/blog/how-to-start-welding" spellcheck="false" />
+      <div class="field-bar" style="background:transparent"></div>
+    </div>
+
+  </div>
+
+  <!-- SERP mock -->
+  <div class="card" style="margin-bottom:14px;overflow:visible">
+    <div class="card-label-row">
+      <span class="card-label">Search result preview</span>
+      <span style="font-size:11px;color:var(--text-faint)">desktop Google</span>
+    </div>
+    <div style="padding:16px" id="serp-wrap">
+      <div class="serp-empty-hint">Fill in the fields above to see your search result preview</div>
+    </div>
+  </div>
+
+  <!-- Field checks -->
+  <div class="checks-row">
+    <div class="check-box" id="title-check">
+      <div class="check-box-head">
+        <span class="check-pill na" id="title-pill">—</span>
+        <span class="check-box-name">Page Title</span>
+      </div>
+      <div class="check-box-detail" id="title-detail">Optimal length is 50–60 characters.</div>
+    </div>
+    <div class="check-box" id="desc-check">
+      <div class="check-box-head">
+        <span class="check-pill na" id="desc-pill">—</span>
+        <span class="check-box-name">Meta Description</span>
+      </div>
+      <div class="check-box-detail" id="desc-detail">Optimal length is 130–160 characters.</div>
+    </div>
+  </div>
+
+  <!-- URL Slug output -->
+  <div class="slug-row">
+    <div class="card-label" style="margin-bottom:8px">URL Slug from title</div>
+    <div class="slug-hint">Auto-generated from your page title — copy and use as your permalink.</div>
+    <div class="slug-output" id="slug-output">your-page-title-will-appear-here</div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions-row">
+    <button class="copy-btn" id="copy-slug-btn" disabled>Copy Slug</button>
+    <button class="ghost-btn" id="cap-btn">Fix Title Capitalisation →</button>
+  </div>
+</main>
+
+<footer><span class="logo-text">zink</span><span class="logo-dot">.</span> &nbsp;·&nbsp; Free tools. No login. No data collected.</footer>
+
+<script>
+// ── Theme ─────────────────────────────────────────────────
+const root=document.documentElement,themeBtn=document.getElementById('theme-btn'),sunIcon=document.getElementById('icon-sun'),moonIcon=document.getElementById('icon-moon');
+function applyTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('zink-theme',t)}catch(e){}sunIcon.style.display=t==='dark'?'block':'none';moonIcon.style.display=t==='light'?'block':'none';}
+const saved=()=>{try{return localStorage.getItem('zink-theme')}catch(e){return null}};
+applyTheme(saved()||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+themeBtn.addEventListener('click',()=>applyTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+
+// ── Elements ──────────────────────────────────────────────
+const titleInput  = document.getElementById('title-input');
+const descInput   = document.getElementById('desc-input');
+const urlInput    = document.getElementById('url-input');
+const titleCount  = document.getElementById('title-count');
+const descCount   = document.getElementById('desc-count');
+const titleBar    = document.getElementById('title-bar');
+const descBar     = document.getElementById('desc-bar');
+const serpWrap    = document.getElementById('serp-wrap');
+const titlePill   = document.getElementById('title-pill');
+const titleDetail = document.getElementById('title-detail');
+const descPill    = document.getElementById('desc-pill');
+const descDetail  = document.getElementById('desc-detail');
+const slugOutput  = document.getElementById('slug-output');
+const copySlugBtn = document.getElementById('copy-slug-btn');
+const capBtn      = document.getElementById('cap-btn');
+
+const TITLE_OPTIMAL_MIN = 50, TITLE_OPTIMAL_MAX = 60;
+const DESC_OPTIMAL_MIN  = 130, DESC_OPTIMAL_MAX  = 160;
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function parseUrl(raw) {
+  let url = raw.trim();
+  if (!url) return { domain: '', breadcrumb: '' };
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  try {
+    const u     = new URL(url);
+    const parts = u.pathname.split('/').filter(Boolean);
+    const domain = u.hostname.replace(/^www\./, '');
+    return {
+      domain,
+      breadcrumb: parts.length ? domain + ' › ' + parts.join(' › ') : domain
+    };
+  } catch(e) {
+    return { domain: raw.trim(), breadcrumb: raw.trim() };
+  }
+}
+
+function toSlug(text) {
+  return text.toLowerCase().trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function titleStatus(len) {
+  if (len === 0)  return { cls: 'na',   label: '—',    detail: 'Optimal length is 50–60 characters.' };
+  if (len < 30)   return { cls: 'bad',  label: 'Short', detail: `${len} chars — too short. Aim for 50–60 to fill available space and help rankings.` };
+  if (len < 50)   return { cls: 'warn', label: 'OK',    detail: `${len} chars — acceptable but you have room to add more keywords (aim for 50–60).` };
+  if (len <= 60)  return { cls: 'ok',   label: 'Great', detail: `${len} chars — perfect range. Google will display your full title.` };
+  if (len <= 70)  return { cls: 'warn', label: 'Long',  detail: `${len} chars — may be truncated on some screens. Google's cutoff is ~60 characters.` };
+  return           { cls: 'bad',  label: 'Too long', detail: `${len} chars — likely truncated in results. Shorten to under 60 characters.` };
+}
+
+function descStatus(len) {
+  if (len === 0)   return { cls: 'na',   label: '—',       detail: 'Optimal length is 130–160 characters.' };
+  if (len < 70)    return { cls: 'bad',  label: 'Short',   detail: `${len} chars — too short. Aim for 130–160 to fill the snippet and attract clicks.` };
+  if (len < 130)   return { cls: 'warn', label: 'OK',      detail: `${len} chars — acceptable, but you have room to add more context and a call to action.` };
+  if (len <= 160)  return { cls: 'ok',   label: 'Great',   detail: `${len} chars — perfect range. Google will likely show the full description.` };
+  if (len <= 180)  return { cls: 'warn', label: 'Long',    detail: `${len} chars — may be truncated. Google's cutoff is approximately 155–160 characters.` };
+  return            { cls: 'bad',  label: 'Too long', detail: `${len} chars — will be cut off in results. Trim to under 160 characters.` };
+}
+
+function update() {
+  const title = titleInput.value;
+  const desc  = descInput.value;
+  const tLen  = title.length;
+  const dLen  = desc.length;
+  const { breadcrumb, domain } = parseUrl(urlInput.value);
+
+  // Title meter
+  const tPct = Math.min(tLen / 60 * 100, 100);
+  titleBar.style.width = tPct + '%';
+  titleBar.style.background = tLen === 0 ? 'var(--text-faint)' : tLen <= 60 ? 'var(--success)' : tLen <= 70 ? 'var(--warn)' : 'var(--danger)';
+  const tState = titleStatus(tLen);
+  titleCount.textContent = tLen + ' / 60';
+  titleCount.className   = 'field-count ' + (tLen === 0 ? '' : tState.cls);
+  titlePill.textContent  = tState.label;
+  titlePill.className    = 'check-pill ' + tState.cls;
+  titleDetail.textContent = tState.detail;
+
+  // Desc meter
+  const dPct = Math.min(dLen / 160 * 100, 100);
+  descBar.style.width = dPct + '%';
+  descBar.style.background = dLen === 0 ? 'var(--text-faint)' : dLen <= 160 ? 'var(--success)' : dLen <= 180 ? 'var(--warn)' : 'var(--danger)';
+  const dState = descStatus(dLen);
+  descCount.textContent = dLen + ' / 160';
+  descCount.className   = 'field-count ' + (dLen === 0 ? '' : dState.cls);
+  descPill.textContent  = dState.label;
+  descPill.className    = 'check-pill ' + dState.cls;
+  descDetail.textContent = dState.detail;
+
+  // SERP mock
+  const hasAny = title || desc || breadcrumb;
+  if (!hasAny) {
+    serpWrap.innerHTML = '<div class="serp-empty-hint">Fill in the fields above to see your search result preview</div>';
+  } else {
+    const displayTitle    = tLen > 60 ? esc(title.slice(0, 60)) + '<span style="color:#9aa0a6">…</span>' : esc(title);
+    const displayDesc     = dLen > 160 ? esc(desc.slice(0, 157)) + '…' : esc(desc);
+    const favicon         = domain ? `<div class="serp-favicon">${esc(domain.charAt(0).toUpperCase())}</div>` : `<div class="serp-favicon">G</div>`;
+    const domainLine      = breadcrumb
+      ? `<div style="display:flex;flex-direction:column"><span class="serp-domain">${esc(domain || breadcrumb)}</span><span class="serp-path">${esc(breadcrumb)}</span></div>`
+      : `<span class="serp-domain" style="color:#9aa0a6;font-style:italic">yoursite.com</span>`;
+
+    serpWrap.innerHTML = `
+      <div class="serp-card">
+        <div class="serp-site-row">
+          ${favicon}
+          ${domainLine}
+          <div class="serp-kebab"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></div>
+        </div>
+        <div class="serp-title">${title ? displayTitle : '<span class="serp-title-empty">Your page title appears here</span>'}</div>
+        <div class="serp-desc">${desc ? displayDesc : '<span class="serp-desc-empty">Your meta description appears here — this is the text that shows in search results and directly influences whether people click your link.</span>'}</div>
+      </div>`;
+  }
+
+  // Slug
+  const slug = toSlug(title);
+  if (slug) {
+    slugOutput.textContent = slug;
+    slugOutput.classList.add('has-slug');
+    copySlugBtn.disabled = false;
+  } else {
+    slugOutput.textContent = 'your-page-title-will-appear-here';
+    slugOutput.classList.remove('has-slug');
+    copySlugBtn.disabled = true;
+  }
+}
+
+// ── Copy slug ─────────────────────────────────────────────
+copySlugBtn.addEventListener('click', () => {
+  const slug = toSlug(titleInput.value);
+  if (!slug) return;
+  const done = () => { copySlugBtn.textContent='✓ Copied'; copySlugBtn.classList.add('copied'); setTimeout(()=>{copySlugBtn.textContent='Copy Slug';copySlugBtn.classList.remove('copied');},2000); };
+  navigator.clipboard ? navigator.clipboard.writeText(slug).then(done).catch(()=>fb(slug,done)) : fb(slug,done);
+});
+function fb(t,cb){const el=document.createElement('textarea');el.value=t;el.style.cssText='position:fixed;opacity:0;pointer-events:none';document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);cb();}
+
+// ── Handoff to capitaliser ────────────────────────────────
+capBtn.addEventListener('click', () => {
+  const text = titleInput.value.trim();
+  if (!text) return;
+  sessionStorage.setItem('zink-cap-text', text);
+  sessionStorage.setItem('zink-cap-source', 'SERP Preview');
+  window.location.href = 'capitaliser.html';
+});
+
+titleInput.addEventListener('input', update);
+descInput.addEventListener('input', update);
+urlInput.addEventListener('input', update);
+update();
+</script>
+</body>
+</html>

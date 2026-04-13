@@ -87,6 +87,13 @@ function convertCase(text, mode, style) {
     case 'toggle':   return text.split('').map(c =>
       c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()
     ).join('');
+    case 'slug':     return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_]+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
     default:         return text;
   }
 }

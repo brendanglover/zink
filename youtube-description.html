@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free YouTube description builder. Check character limits, preview above-the-fold cut, validate timestamp formatting and count hashtags. No login, no data collected." />
+  <meta name="robots" content="index, follow" />
+  <title>Free YouTube Description Builder — Preview & Checker | zink.</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://gotzink.com/youtube-description.html" />
+  <meta property="og:title" content="Free YouTube Description Builder — Preview & Checker" />
+  <meta property="og:description" content="Check your YouTube description against character limits, preview the above-the-fold cut, validate timestamps and count hashtags. Free, no login." />
+  <meta property="og:image" content="https://gotzink.com/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free YouTube Description Builder — Preview & Checker | zink." />
+  <meta name="twitter:description" content="Check your YouTube description against limits, preview the fold, validate timestamps. Free, no login." />
+  <meta name="twitter:image" content="https://gotzink.com/og-image.svg" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XY13QWYYQ4"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XY13QWYYQ4');</script>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    .desc-textarea{width:100%;padding:16px;background:transparent;color:var(--text);font-family:var(--font);font-size:14px;line-height:1.7;resize:vertical;border:none;display:block;min-height:200px;transition:color var(--ease)}
+    .desc-textarea:focus{outline:none}
+    .desc-textarea::placeholder{color:var(--text-faint)}
+    .char-bar-wrap{padding:0 16px 14px}
+    .char-bar-track{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
+    .char-bar-fill{height:100%;border-radius:3px;transition:width .15s ease,background .15s ease}
+    .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+    @media(max-width:560px){.stats-grid{grid-template-columns:1fr 1fr}}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+    .stat-value{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.5px;line-height:1;margin-bottom:4px}
+    .stat-label{font-size:12px;color:var(--text-muted)}
+    .stat-card.ok .stat-value{color:var(--success)}
+    .stat-card.warn .stat-value{color:var(--warn)}
+    .stat-card.bad .stat-value{color:var(--danger)}
+    .fold-preview{padding:16px;font-size:13px;line-height:1.8;word-break:break-word}
+    .fold-visible{color:var(--text)}
+    .fold-cut{display:inline-block;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:3px;vertical-align:middle;margin:0 4px;letter-spacing:.05em;white-space:nowrap}
+    .fold-hidden{color:var(--text-faint)}
+    .fold-empty{color:var(--text-faint);font-style:italic}
+    .check-list{padding:4px 0}
+    .check-row{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border)}
+    .check-row:last-child{border-bottom:none}
+    .check-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+    .check-dot.pass{background:var(--success)}
+    .check-dot.warn{background:var(--warn)}
+    .check-dot.fail{background:var(--danger)}
+    .check-dot.na{background:var(--border2)}
+    .check-body{flex:1}
+    .check-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+    .check-detail{font-size:12px;color:var(--text-muted);line-height:1.5}
+    .ts-list{display:flex;flex-wrap:wrap;gap:6px;padding:12px 16px 14px}
+    .ts-chip{font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;background:var(--surface2);color:var(--text-muted);border:1px solid var(--border)}
+    .ts-chip.bad{background:var(--danger-dim);color:var(--danger);border-color:rgba(239,68,68,.25)}
+    .actions-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+    .ghost-btn{padding:8px 16px;border-radius:var(--radius-xs);font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);transition:all var(--ease);text-decoration:none;display:inline-flex;align-items:center}
+    .ghost-btn:hover{border-color:var(--accent);color:var(--accent)}
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <a href="/" class="logo">zink<span>.</span></a>
+  <div class="header-right">
+    <a href="/" class="back-link">← All Tools</a>
+    <span class="tagline">free tools · no login · no data collected</span>
+    <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
+      <svg id="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg id="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-header">
+    <h1 class="tool-title">YouTube Description Builder</h1>
+    <p class="tool-subtitle">Check limits, preview the fold, validate timestamps and count hashtags.</p>
+  </div>
+
+  <!-- Input card -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-label-row">
+      <span class="card-label">Description</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span id="char-display" style="font-size:12px;font-weight:700;color:var(--text-faint)">0 / 5000</span>
+        <button class="clear-btn" id="clear-btn">Clear</button>
+      </div>
+    </div>
+    <textarea class="desc-textarea" id="desc-input" placeholder="Paste or type your YouTube description here..." spellcheck="false" maxlength="5000"></textarea>
+    <div class="char-bar-wrap">
+      <div class="char-bar-track"><div class="char-bar-fill" id="char-bar" style="width:0%;background:var(--success)"></div></div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card" id="stat-chars">
+      <div class="stat-value" id="stat-chars-val">0</div>
+      <div class="stat-label">characters used</div>
+    </div>
+    <div class="stat-card" id="stat-hashtags">
+      <div class="stat-value" id="stat-hashtags-val">0</div>
+      <div class="stat-label">hashtags</div>
+    </div>
+    <div class="stat-card" id="stat-ts">
+      <div class="stat-value" id="stat-ts-val">0</div>
+      <div class="stat-label">timestamps</div>
+    </div>
+  </div>
+
+  <!-- Above the fold preview -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-label-row">
+      <span class="card-label">Above the fold</span>
+      <span style="font-size:11px;color:var(--text-faint)">first 157 chars visible before "Show more"</span>
+    </div>
+    <div class="fold-preview" id="fold-preview">
+      <span class="fold-empty">Type a description to see what viewers see before clicking "Show more"...</span>
+    </div>
+  </div>
+
+  <!-- Checks -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-label-row"><span class="card-label">Checks</span></div>
+    <div class="check-list" id="checks-list">
+      <div class="check-row">
+        <div class="check-dot na"></div>
+        <div class="check-body"><div class="check-title" style="color:var(--text-faint)">Start typing to see checks</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timestamps (shown when detected) -->
+  <div class="card" id="ts-card" style="margin-bottom:14px;display:none">
+    <div class="card-label-row"><span class="card-label">Timestamps detected</span></div>
+    <div class="ts-list" id="ts-list"></div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions-row">
+    <button class="copy-btn" id="copy-btn" disabled>Copy Description</button>
+    <a href="youtube-title.html" class="ghost-btn">Score your title in YouTube Title Optimiser →</a>
+  </div>
+</main>
+
+<footer><span class="logo-text">zink</span><span class="logo-dot">.</span> &nbsp;·&nbsp; Free tools. No login. No data collected.</footer>
+
+<script>
+// ── Theme ─────────────────────────────────────────────────
+const root=document.documentElement,themeBtn=document.getElementById('theme-btn'),sunIcon=document.getElementById('icon-sun'),moonIcon=document.getElementById('icon-moon');
+function applyTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('zink-theme',t)}catch(e){}sunIcon.style.display=t==='dark'?'block':'none';moonIcon.style.display=t==='light'?'block':'none';}
+const saved=()=>{try{return localStorage.getItem('zink-theme')}catch(e){return null}};
+applyTheme(saved()||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+themeBtn.addEventListener('click',()=>applyTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+
+// ── Elements ──────────────────────────────────────────────
+const descInput    = document.getElementById('desc-input');
+const charDisplay  = document.getElementById('char-display');
+const charBar      = document.getElementById('char-bar');
+const foldPreview  = document.getElementById('fold-preview');
+const checksList   = document.getElementById('checks-list');
+const tsCard       = document.getElementById('ts-card');
+const tsList       = document.getElementById('ts-list');
+const copyBtn      = document.getElementById('copy-btn');
+const clearBtn     = document.getElementById('clear-btn');
+const statChars    = document.getElementById('stat-chars');
+const statCharsVal = document.getElementById('stat-chars-val');
+const statHashCard = document.getElementById('stat-hashtags');
+const statHashVal  = document.getElementById('stat-hashtags-val');
+const statTsVal    = document.getElementById('stat-ts-val');
+
+const FOLD_LIMIT   = 157;
+const CHAR_LIMIT   = 5000;
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function update() {
+  const text = descInput.value;
+  const len  = text.length;
+
+  // Char display + bar
+  charDisplay.textContent = len + ' / ' + CHAR_LIMIT;
+  const pct = Math.min(len / CHAR_LIMIT * 100, 100);
+  charBar.style.width = pct + '%';
+  charBar.style.background = len > 4800 ? 'var(--danger)' : len > 4500 ? 'var(--warn)' : 'var(--success)';
+
+  // Stat: chars
+  statCharsVal.textContent = len;
+  statChars.className = 'stat-card' + (len > 4800 ? ' bad' : len > 4500 ? ' warn' : len > 0 ? ' ok' : '');
+
+  // Hashtags
+  const hashtags = text.match(/#\w+/g) || [];
+  statHashVal.textContent = hashtags.length;
+  statHashCard.className = 'stat-card' + (hashtags.length > 15 ? ' bad' : hashtags.length > 3 ? ' warn' : hashtags.length > 0 ? ' ok' : '');
+
+  // Timestamps
+  const tsRe = /(?:^|[\s\n])(\d{1,2}:\d{2}(?::\d{2})?)/gm;
+  const tsMatches = [];
+  let m;
+  while ((m = tsRe.exec(text)) !== null) tsMatches.push(m[1]);
+  statTsVal.textContent = tsMatches.length;
+
+  if (tsMatches.length > 0) {
+    tsCard.style.display = '';
+    const firstIsZero = /^0?0:00$/.test(tsMatches[0]);
+    tsList.innerHTML = tsMatches.map((ts, i) => {
+      const bad = i === 0 && !firstIsZero;
+      return `<span class="ts-chip${bad?' bad':''}" title="${bad?'First timestamp should be 0:00':''}">${esc(ts)}${bad?' ⚠':''}</span>`;
+    }).join('');
+  } else {
+    tsCard.style.display = 'none';
+  }
+
+  // Fold preview
+  if (text.trim()) {
+    const vis  = text.slice(0, FOLD_LIMIT);
+    const rest = text.slice(FOLD_LIMIT);
+    foldPreview.innerHTML =
+      `<span class="fold-visible">${esc(vis)}</span>` +
+      (rest ? `<span class="fold-cut">FOLD</span><span class="fold-hidden">${esc(rest.slice(0,100))}${rest.length>100?'…':''}</span>` : '');
+  } else {
+    foldPreview.innerHTML = '<span class="fold-empty">Type a description to see what viewers see before clicking "Show more"...</span>';
+  }
+
+  // Checks
+  const checks = [];
+  if (!text.trim()) {
+    checks.push({s:'na', t:'Start typing to see checks'});
+  } else {
+    // Char limit
+    checks.push(len <= 5000
+      ? {s:'pass', t:`Character limit OK`, d:`${len} of 5000 characters used.`}
+      : {s:'fail', t:`Over the 5000 character limit`, d:`${len - 5000} characters over — YouTube will cut off the rest.`}
+    );
+    // Hook strength
+    const hookLen = text.slice(0, FOLD_LIMIT).trim().length;
+    checks.push(hookLen >= 100
+      ? {s:'pass', t:'Strong above-the-fold hook', d:`${hookLen} chars visible before "Show more" — good use of prime real estate.`}
+      : {s:'warn', t:'Short above-the-fold hook', d:`Only ${hookLen} chars above the fold. Front-load your keywords and key info.`}
+    );
+    // Hashtags
+    if (hashtags.length === 0) {
+      checks.push({s:'na', t:'No hashtags', d:'Add up to 3 relevant hashtags at the end. YouTube shows them clickably above the title.'});
+    } else if (hashtags.length <= 3) {
+      checks.push({s:'pass', t:`${hashtags.length} hashtag${hashtags.length>1?'s':''} — displayed above title`, d:'YouTube shows up to 3 hashtags from your description above the video title.'});
+    } else if (hashtags.length <= 15) {
+      checks.push({s:'warn', t:`${hashtags.length} hashtags — only first 3 shown above title`, d:'YouTube only displays 3 hashtags above the title. The rest are still searchable in descriptions.'});
+    } else {
+      checks.push({s:'fail', t:`${hashtags.length} hashtags — over the 15 limit`, d:'YouTube ignores all hashtags when you use more than 15. Reduce to 15 or fewer.'});
+    }
+    // Timestamps
+    if (tsMatches.length > 0) {
+      const firstOk = /^0?0:00$/.test(tsMatches[0]);
+      checks.push(firstOk
+        ? {s:'pass', t:`${tsMatches.length} timestamps — chapters will be created`, d:'First timestamp starts at 0:00. YouTube will generate video chapters automatically.'}
+        : {s:'warn', t:'Timestamps found — first must be 0:00', d:`Your first timestamp is "${tsMatches[0]}". YouTube requires chapters to start at 0:00.`}
+      );
+    }
+    // Link placement
+    const linkIdx = text.search(/https?:\/\//);
+    if (linkIdx !== -1) {
+      checks.push(linkIdx < FOLD_LIMIT
+        ? {s:'pass', t:'Key link is above the fold', d:'Your link is visible without the viewer expanding the description.'}
+        : {s:'warn', t:'Link is below the fold', d:'Your link appears after the fold cut. Move your most important link into the first 157 characters.'}
+      );
+    }
+  }
+  checksList.innerHTML = checks.map(c =>
+    `<div class="check-row"><div class="check-dot ${c.s}"></div><div class="check-body"><div class="check-title">${c.t}</div>${c.d?`<div class="check-detail">${c.d}</div>`:''}</div></div>`
+  ).join('');
+
+  copyBtn.disabled = !text.trim();
+}
+
+// ── Copy ──────────────────────────────────────────────────
+copyBtn.addEventListener('click', () => {
+  const text = descInput.value;
+  if (!text.trim()) return;
+  const done = () => { copyBtn.textContent='✓ Copied'; copyBtn.classList.add('copied'); setTimeout(()=>{copyBtn.textContent='Copy Description';copyBtn.classList.remove('copied');},2000); };
+  navigator.clipboard ? navigator.clipboard.writeText(text).then(done).catch(()=>fb(text,done)) : fb(text,done);
+});
+function fb(t,cb){const el=document.createElement('textarea');el.value=t;el.style.cssText='position:fixed;opacity:0;pointer-events:none';document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);cb();}
+
+clearBtn.addEventListener('click', () => { descInput.value=''; update(); descInput.focus(); });
+descInput.addEventListener('input', update);
+update();
+</script>
+</body>
+</html>

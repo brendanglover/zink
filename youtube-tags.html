@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Free YouTube tags analyser. Paste your tags and instantly check total character count against the 500-char limit, detect duplicates and review tag lengths. No login, no data collected." />
+  <meta name="robots" content="index, follow" />
+  <title>Free YouTube Tags Analyser — 500 Char Limit Checker | zink.</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://gotzink.com/youtube-tags.html" />
+  <meta property="og:title" content="Free YouTube Tags Analyser — 500 Char Limit Checker" />
+  <meta property="og:description" content="Paste your YouTube tags and check total character count against the 500-char limit, detect duplicates and review tag lengths. Free, no login." />
+  <meta property="og:image" content="https://gotzink.com/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free YouTube Tags Analyser — 500 Char Limit Checker | zink." />
+  <meta name="twitter:description" content="Check your YouTube tags against the 500-char limit, spot duplicates and review tag lengths. Free, no login." />
+  <meta name="twitter:image" content="https://gotzink.com/og-image.svg" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XY13QWYYQ4"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XY13QWYYQ4');</script>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    .tags-textarea{width:100%;padding:16px;background:transparent;color:var(--text);font-family:var(--font);font-size:14px;line-height:1.7;resize:vertical;border:none;display:block;min-height:120px;transition:color var(--ease)}
+    .tags-textarea:focus{outline:none}
+    .tags-textarea::placeholder{color:var(--text-faint)}
+    .meter-wrap{padding:0 16px 14px}
+    .meter-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+    .meter-val{font-size:13px;font-weight:700;color:var(--text);transition:color var(--ease)}
+    .meter-hint{font-size:11px;color:var(--text-faint)}
+    .meter-track{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden}
+    .meter-fill{height:100%;border-radius:4px;transition:width .15s ease,background .15s ease}
+    .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+    @media(max-width:500px){.stats-row{grid-template-columns:1fr 1fr}}
+    .stat-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;transition:border-color var(--ease)}
+    .stat-box.ok{border-color:rgba(34,197,94,.3)}
+    .stat-box.warn{border-color:rgba(251,191,36,.3)}
+    .stat-box.bad{border-color:rgba(239,68,68,.3)}
+    .stat-num{font-size:22px;font-weight:700;color:var(--text);letter-spacing:-.5px;line-height:1;margin-bottom:4px;transition:color var(--ease)}
+    .stat-box.ok .stat-num{color:var(--success)}
+    .stat-box.warn .stat-num{color:var(--warn)}
+    .stat-box.bad .stat-num{color:var(--danger)}
+    .stat-lbl{font-size:12px;color:var(--text-muted)}
+    .tag-chips{padding:14px 16px;display:flex;flex-wrap:wrap;gap:7px;min-height:54px}
+    .tag-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);font-size:12px;color:var(--text);font-weight:500;max-width:280px;transition:all var(--ease)}
+    .tag-chip.dup{background:var(--danger-dim);border-color:rgba(239,68,68,.3);color:var(--danger)}
+    .tag-chip.long{background:var(--warn-dim);border-color:rgba(251,191,36,.3);color:var(--warn)}
+    .tag-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .tag-len{font-size:10px;font-weight:700;color:var(--text-faint);flex-shrink:0}
+    .tag-chip.dup .tag-len,.tag-chip.long .tag-len{color:inherit;opacity:.7}
+    .tag-empty{color:var(--text-faint);font-size:13px;font-style:italic;padding:4px 0}
+    .legend-row{display:flex;gap:14px;flex-wrap:wrap;padding:6px 16px 12px;border-top:1px solid var(--border)}
+    .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-faint)}
+    .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .actions-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+    .ghost-btn{padding:8px 16px;border-radius:var(--radius-xs);font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);transition:all var(--ease);text-decoration:none;display:inline-flex;align-items:center}
+    .ghost-btn:hover{border-color:var(--accent);color:var(--accent)}
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <a href="/" class="logo">zink<span>.</span></a>
+  <div class="header-right">
+    <a href="/" class="back-link">← All Tools</a>
+    <span class="tagline">free tools · no login · no data collected</span>
+    <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
+      <svg id="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg id="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="tool-header">
+    <h1 class="tool-title">YouTube Tags Analyser</h1>
+    <p class="tool-subtitle">Paste your tags, check the 500-character limit and spot duplicates instantly.</p>
+  </div>
+
+  <!-- Input card -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-label-row">
+      <span class="card-label">Tags</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:11px;color:var(--text-faint)">comma or newline separated</span>
+        <button class="clear-btn" id="clear-btn">Clear</button>
+      </div>
+    </div>
+    <textarea class="tags-textarea" id="tags-input" placeholder="e.g. welding tips, beginner welding, how to weld, MIG welding tutorial" spellcheck="false"></textarea>
+    <div class="meter-wrap">
+      <div class="meter-top">
+        <span class="meter-val" id="meter-val">0 / 500 characters</span>
+        <span class="meter-hint">YouTube's total tag limit</span>
+      </div>
+      <div class="meter-track"><div class="meter-fill" id="meter-fill" style="width:0%;background:var(--success)"></div></div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-box" id="box-chars">
+      <div class="stat-num" id="box-chars-val">0</div>
+      <div class="stat-lbl">characters used</div>
+    </div>
+    <div class="stat-box" id="box-tags">
+      <div class="stat-num" id="box-tags-val">0</div>
+      <div class="stat-lbl">tags</div>
+    </div>
+    <div class="stat-box" id="box-dups">
+      <div class="stat-num" id="box-dups-val">0</div>
+      <div class="stat-lbl">duplicates</div>
+    </div>
+  </div>
+
+  <!-- Tag breakdown -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-label-row"><span class="card-label">Tag breakdown</span></div>
+    <div class="tag-chips" id="tag-chips">
+      <span class="tag-empty">Paste tags above to see the breakdown...</span>
+    </div>
+    <div class="legend-row" id="legend" style="display:none">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--danger)"></div>Duplicate</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--warn)"></div>Long tag (&gt;30 chars)</div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions-row">
+    <button class="copy-btn" id="copy-btn" disabled>Copy Cleaned Tags</button>
+    <a href="youtube-title.html" class="ghost-btn">Score your title in YouTube Title Optimiser →</a>
+  </div>
+</main>
+
+<footer><span class="logo-text">zink</span><span class="logo-dot">.</span> &nbsp;·&nbsp; Free tools. No login. No data collected.</footer>
+
+<script>
+// ── Theme ─────────────────────────────────────────────────
+const root=document.documentElement,themeBtn=document.getElementById('theme-btn'),sunIcon=document.getElementById('icon-sun'),moonIcon=document.getElementById('icon-moon');
+function applyTheme(t){root.setAttribute('data-theme',t);try{localStorage.setItem('zink-theme',t)}catch(e){}sunIcon.style.display=t==='dark'?'block':'none';moonIcon.style.display=t==='light'?'block':'none';}
+const saved=()=>{try{return localStorage.getItem('zink-theme')}catch(e){return null}};
+applyTheme(saved()||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark'));
+themeBtn.addEventListener('click',()=>applyTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+
+// ── Elements ──────────────────────────────────────────────
+const tagsInput = document.getElementById('tags-input');
+const meterFill = document.getElementById('meter-fill');
+const meterVal  = document.getElementById('meter-val');
+const boxChars  = document.getElementById('box-chars');
+const boxCharsV = document.getElementById('box-chars-val');
+const boxTags   = document.getElementById('box-tags');
+const boxTagsV  = document.getElementById('box-tags-val');
+const boxDups   = document.getElementById('box-dups');
+const boxDupsV  = document.getElementById('box-dups-val');
+const tagChips  = document.getElementById('tag-chips');
+const legend    = document.getElementById('legend');
+const copyBtn   = document.getElementById('copy-btn');
+const clearBtn  = document.getElementById('clear-btn');
+const LIMIT     = 500;
+
+function parseTags(raw) {
+  return raw.split(/[\n,]/).map(t => t.trim()).filter(Boolean);
+}
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function update() {
+  const tags       = parseTags(tagsInput.value);
+  const totalChars = tags.reduce((s, t) => s + t.length, 0);
+  const pct        = Math.min(totalChars / LIMIT * 100, 100);
+  const over       = totalChars > LIMIT;
+
+  // Meter
+  meterFill.style.width      = pct + '%';
+  meterFill.style.background = over ? 'var(--danger)' : totalChars > 450 ? 'var(--warn)' : 'var(--success)';
+  meterVal.textContent       = totalChars + ' / 500 characters';
+  meterVal.style.color       = over ? 'var(--danger)' : totalChars > 450 ? 'var(--warn)' : 'var(--text)';
+
+  // Stats
+  boxCharsV.textContent = totalChars;
+  boxChars.className    = 'stat-box' + (over ? ' bad' : totalChars > 450 ? ' warn' : tags.length > 0 ? ' ok' : '');
+
+  boxTagsV.textContent  = tags.length;
+  boxTags.className     = 'stat-box' + (tags.length === 0 ? '' : tags.length <= 15 ? ' ok' : ' warn');
+
+  // Duplicates (case-insensitive)
+  const seen = {}, dups = new Set();
+  tags.forEach(t => { const k = t.toLowerCase(); if (seen[k]) dups.add(k); seen[k] = true; });
+  boxDupsV.textContent = dups.size;
+  boxDups.className    = 'stat-box' + (dups.size > 0 ? ' bad' : tags.length > 0 ? ' ok' : '');
+
+  // Chips
+  if (tags.length === 0) {
+    tagChips.innerHTML   = '<span class="tag-empty">Paste tags above to see the breakdown...</span>';
+    legend.style.display = 'none';
+  } else {
+    const hasLong = tags.some(t => t.length > 30);
+    const hasDup  = dups.size > 0;
+    legend.style.display = (hasLong || hasDup) ? '' : 'none';
+    tagChips.innerHTML = tags.map(t => {
+      const isDup  = dups.has(t.toLowerCase());
+      const isLong = !isDup && t.length > 30;
+      const cls    = isDup ? 'dup' : isLong ? 'long' : '';
+      const title  = isDup ? 'Duplicate tag' : isLong ? 'Long tag — consider shortening for better relevance' : '';
+      return `<span class="tag-chip ${cls}" title="${title}"><span class="tag-name">${esc(t)}</span><span class="tag-len">${t.length}</span></span>`;
+    }).join('');
+  }
+
+  copyBtn.disabled = tags.length === 0;
+}
+
+// ── Copy cleaned (deduped, trimmed, comma-separated) ──────
+copyBtn.addEventListener('click', () => {
+  const tags = parseTags(tagsInput.value);
+  if (!tags.length) return;
+  // deduplicate preserving first occurrence
+  const seen = new Set(), unique = tags.filter(t => { const k=t.toLowerCase(); if(seen.has(k)) return false; seen.add(k); return true; });
+  const out  = unique.join(', ');
+  const done = () => { copyBtn.textContent='✓ Copied'; copyBtn.classList.add('copied'); setTimeout(()=>{copyBtn.textContent='Copy Cleaned Tags';copyBtn.classList.remove('copied');},2000); };
+  navigator.clipboard ? navigator.clipboard.writeText(out).then(done).catch(()=>fb(out,done)) : fb(out,done);
+});
+function fb(t,cb){const el=document.createElement('textarea');el.value=t;el.style.cssText='position:fixed;opacity:0;pointer-events:none';document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);cb();}
+
+clearBtn.addEventListener('click', () => { tagsInput.value=''; update(); tagsInput.focus(); });
+tagsInput.addEventListener('input', update);
+update();
+</script>
+</body>
+</html>

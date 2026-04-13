@@ -1,7 +1,11 @@
 User-agent: *
 Allow: /
 Allow: /capitaliser.html
-Allow: /listing-builder.html
 Allow: /word-counter.html
+Allow: /keyword-density.html
+Allow: /youtube-title.html
+Allow: /youtube-description.html
+Allow: /youtube-tags.html
+Allow: /serp-preview.html
 
 Sitemap: https://gotzink.com/sitemap.xml
