@@ -25,6 +25,17 @@
   --radius-xs:    6px;
   --font:         'Outfit', sans-serif;
   --ease:         0.16s ease;
+
+  /* ── Category colour tokens ── */
+  --cat-writing:      #6366f1;
+  --cat-writing-dim:  rgba(99,102,241,0.13);
+  --cat-writing-glow: rgba(99,102,241,0.18);
+  --cat-youtube:      #f43f5e;
+  --cat-youtube-dim:  rgba(244,63,94,0.13);
+  --cat-youtube-glow: rgba(244,63,94,0.18);
+  --cat-seo:          #10b981;
+  --cat-seo-dim:      rgba(16,185,129,0.13);
+  --cat-seo-glow:     rgba(16,185,129,0.18);
 }
 
 [data-theme="light"] {
@@ -40,6 +51,12 @@
   --success-dim:  rgba(34,197,94,0.08);
   --warn-dim:     rgba(251,191,36,0.08);
   --danger-dim:   rgba(239,68,68,0.08);
+  --cat-writing-dim:  rgba(99,102,241,0.09);
+  --cat-writing-glow: rgba(99,102,241,0.12);
+  --cat-youtube-dim:  rgba(244,63,94,0.09);
+  --cat-youtube-glow: rgba(244,63,94,0.12);
+  --cat-seo-dim:      rgba(16,185,129,0.09);
+  --cat-seo-glow:     rgba(16,185,129,0.12);
 }
 
 /* ── Base ──────────────────────────────────────────────── */
@@ -382,4 +399,83 @@ footer {
   main { padding: 28px 16px 60px; }
   .tool-title { font-size: 22px; }
   #input-text, #output-text { font-size: 15px; }
+}
+
+/* ── Hero pill ─────────────────────────────────────────── */
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 14px 5px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+  letter-spacing: 0.01em;
+}
+.hero-pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 6px rgba(34,197,94,0.5);
+  flex-shrink: 0;
+}
+
+/* ── Hero stats ────────────────────────────────────────── */
+.hero-stats {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.hero-stat {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--text-faint);
+  font-weight: 500;
+}
+.hero-stat svg { color: var(--accent); flex-shrink: 0; }
+
+/* ── Category sections ─────────────────────────────────── */
+.category-section { margin-bottom: 36px; }
+
+.category-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.category-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.category-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 20px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.cat-writing .category-pill { background: var(--cat-writing-dim); color: var(--cat-writing); border: 1px solid rgba(99,102,241,0.2); }
+.cat-youtube .category-pill { background: var(--cat-youtube-dim); color: var(--cat-youtube); border: 1px solid rgba(244,63,94,0.2); }
+.cat-seo     .category-pill { background: var(--cat-seo-dim);     color: var(--cat-seo);     border: 1px solid rgba(16,185,129,0.2); }
+
+.category-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+@media (max-width: 600px) {
+  .hero-stats { gap: 14px; }
 }

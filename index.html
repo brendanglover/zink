@@ -24,18 +24,29 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XY13QWYYQ4');</script>
   <link rel="stylesheet" href="css/main.css" />
   <style>
-    .hero{margin-bottom:52px}
+    /* ── Hero ── */
+    .hero{margin-bottom:52px;position:relative}
+    .hero::before{content:'';position:absolute;top:-60px;left:-80px;width:420px;height:280px;background:radial-gradient(ellipse at 30% 40%,rgba(99,102,241,0.07) 0%,transparent 70%);pointer-events:none;z-index:0}
+    .hero>*{position:relative;z-index:1}
     .hero-title{font-size:38px;font-weight:700;letter-spacing:-.8px;color:var(--text);line-height:1.15;margin-bottom:14px}
     .hero-title span{color:var(--accent)}
     .hero-sub{font-size:16px;color:var(--text-muted);max-width:480px;line-height:1.7}
-    .tools-heading{font-size:11px;font-weight:700;color:var(--text-faint);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+    /* ── Tool grid ── */
     .tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .tool-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;cursor:pointer;text-align:left;text-decoration:none;color:inherit;display:block;transition:border-color var(--ease),transform var(--ease)}
-    .tool-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+    /* ── Tool cards ── */
+    .tool-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;cursor:pointer;text-align:left;text-decoration:none;color:inherit;display:block;transition:border-color var(--ease),transform var(--ease),box-shadow var(--ease)}
+    .cat-writing .tool-card:hover{border-color:var(--cat-writing);box-shadow:0 0 0 3px var(--cat-writing-glow),0 4px 16px rgba(0,0,0,0.2);transform:translateY(-2px)}
+    .cat-youtube .tool-card:hover{border-color:var(--cat-youtube);box-shadow:0 0 0 3px var(--cat-youtube-glow),0 4px 16px rgba(0,0,0,0.2);transform:translateY(-2px)}
+    .cat-seo     .tool-card:hover{border-color:var(--cat-seo);box-shadow:0 0 0 3px var(--cat-seo-glow),0 4px 16px rgba(0,0,0,0.2);transform:translateY(-2px)}
     .tool-card.coming-soon{opacity:.5;cursor:default;border-style:dashed}
-    .tool-card.coming-soon:hover{border-color:var(--border);transform:none}
+    .tool-card.coming-soon:hover{border-color:var(--border);transform:none;box-shadow:none}
     .tool-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
-    .tool-icon{width:42px;height:42px;border-radius:10px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent)}
+    /* ── Category-coloured icons ── */
+    .tool-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform var(--ease)}
+    .tool-card:hover .tool-icon{transform:scale(1.08)}
+    .cat-writing .tool-icon{background:var(--cat-writing-dim);color:var(--cat-writing)}
+    .cat-youtube .tool-icon{background:var(--cat-youtube-dim);color:var(--cat-youtube)}
+    .cat-seo     .tool-icon{background:var(--cat-seo-dim);color:var(--cat-seo)}
     .tool-icon.muted{background:var(--surface2);color:var(--text-faint)}
     .new-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.06em;text-transform:uppercase;background:rgba(34,197,94,0.1);color:var(--success);border:1px solid rgba(34,197,94,0.2)}
     .soon-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.06em;text-transform:uppercase;background:var(--surface2);color:var(--text-faint);border:1px solid var(--border)}
@@ -44,8 +55,12 @@
     .tool-desc{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:16px}
     .tool-tags{display:flex;gap:6px;flex-wrap:wrap}
     .tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:var(--surface2);color:var(--text-faint);border:1px solid var(--border)}
-    .tool-arrow{margin-top:18px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--accent);opacity:0;transition:opacity var(--ease)}
-    .tool-card:hover .tool-arrow{opacity:1}
+    /* ── Category-coloured arrows ── */
+    .tool-arrow{margin-top:18px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;opacity:0;transition:opacity var(--ease),gap var(--ease)}
+    .tool-card:hover .tool-arrow{opacity:1;gap:8px}
+    .cat-writing .tool-arrow{color:var(--cat-writing)}
+    .cat-youtube .tool-arrow{color:var(--cat-youtube)}
+    .cat-seo     .tool-arrow{color:var(--cat-seo)}
     @media(max-width:600px){.tools-grid{grid-template-columns:1fr}.hero-title{font-size:28px}}
   </style>
 </head>
@@ -63,98 +78,143 @@
 
   <main>
     <div class="hero">
+      <div class="hero-pill">
+        <span class="hero-pill-dot"></span>
+        7 tools available · always free
+      </div>
       <h1 class="hero-title">The tools you actually use<span>.</span><br>Nothing you don't<span>.</span></h1>
       <p class="hero-sub">Free, fast, no account needed. Every tool runs in your browser — your data never leaves your machine.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          No data collected
+        </div>
+        <div class="hero-stat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Runs in your browser
+        </div>
+        <div class="hero-stat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Instant results
+        </div>
+      </div>
     </div>
 
-    <p class="tools-heading">Available tools</p>
-    <div class="tools-grid">
+    <div class="category-section cat-writing">
+      <div class="category-heading">
+        <span class="category-label">Writing</span>
+        <span class="category-pill">2 tools</span>
+        <span class="category-line"></span>
+      </div>
+      <div class="tools-grid">
 
-      <a href="capitaliser.html" class="tool-card">
-        <div class="tool-card-top">
-          <div class="tool-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+        <a href="capitaliser.html" class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+            </div>
           </div>
-        </div>
-        <div class="tool-name">Title Capitaliser</div>
-        <div class="tool-desc">Instantly capitalise titles and headlines using APA, Chicago, AP, MLA and Email style guides. All case modes included.</div>
-        <div class="tool-tags"><span class="tag">APA</span><span class="tag">Chicago</span><span class="tag">AP</span><span class="tag">MLA</span><span class="tag">Email</span></div>
-        <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
-      </a>
+          <div class="tool-name">Title Capitaliser</div>
+          <div class="tool-desc">Instantly capitalise titles and headlines using APA, Chicago, AP, MLA and Email style guides. All case modes included.</div>
+          <div class="tool-tags"><span class="tag">APA</span><span class="tag">Chicago</span><span class="tag">AP</span><span class="tag">MLA</span><span class="tag">Email</span></div>
+          <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </a>
 
-      <a href="word-counter.html" class="tool-card">
-        <div class="tool-card-top">
-          <div class="tool-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <a href="word-counter.html" class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </div>
           </div>
-        </div>
-        <div class="tool-name">Word Counter</div>
-        <div class="tool-desc">Count words, characters, sentences and paragraphs. Estimate reading time. Check against platform limits for Amazon, SEO, social and ads.</div>
-        <div class="tool-tags"><span class="tag">Writing</span><span class="tag">SEO</span><span class="tag">Amazon</span><span class="tag">Social</span></div>
-        <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
-      </a>
+          <div class="tool-name">Word Counter</div>
+          <div class="tool-desc">Count words, characters, sentences and paragraphs. Estimate reading time. Check against platform limits for Amazon, SEO, social and ads.</div>
+          <div class="tool-tags"><span class="tag">Writing</span><span class="tag">SEO</span><span class="tag">Amazon</span><span class="tag">Social</span></div>
+          <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </a>
 
-      <a href="keyword-density.html" class="tool-card">
-        <div class="tool-card-top">
-          <div class="tool-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+    </div>
+
+    <div class="category-section cat-youtube">
+      <div class="category-heading">
+        <span class="category-label">YouTube</span>
+        <span class="category-pill">3 tools</span>
+        <span class="category-line"></span>
+      </div>
+      <div class="tools-grid">
+
+        <a href="youtube-title.html" class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            </div>
           </div>
-        </div>
-        <div class="tool-name">Keyword Density</div>
-        <div class="tool-desc">Analyse keyword frequency, density and prominence in any text. Colour-coded density signals for Amazon listings, SEO articles and ad copy.</div>
-        <div class="tool-tags"><span class="tag">SEO</span><span class="tag">Amazon</span><span class="tag">Keywords</span><span class="tag">Density</span></div>
-        <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
-      </a>
+          <div class="tool-name">YouTube Title Optimiser</div>
+          <div class="tool-desc">Score your video title against 7 best-practice checks instantly. Live preview shows exactly how it looks in YouTube search results.</div>
+          <div class="tool-tags"><span class="tag">YouTube</span><span class="tag">Creators</span><span class="tag">SEO</span><span class="tag">Titles</span></div>
+          <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </a>
 
-      <a href="youtube-title.html" class="tool-card">
-        <div class="tool-card-top">
-          <div class="tool-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+        <a href="youtube-description.html" class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
           </div>
-        </div>
-        <div class="tool-name">YouTube Title Optimiser</div>
-        <div class="tool-desc">Score your video title against 7 best-practice checks instantly. Live preview shows exactly how it looks in YouTube search results.</div>
-        <div class="tool-tags"><span class="tag">YouTube</span><span class="tag">Creators</span><span class="tag">SEO</span><span class="tag">Titles</span></div>
-        <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
-      </a>
+          <div class="tool-name">YouTube Description Builder</div>
+          <div class="tool-desc">Check character limits, preview the above-the-fold cut, validate timestamp formatting and count hashtags.</div>
+          <div class="tool-tags"><span class="tag">YouTube</span><span class="tag">Creators</span><span class="tag">SEO</span></div>
+          <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </a>
 
-
-      <a href="youtube-description.html" class="tool-card">
-        <div class="tool-card-top">
-          <div class="tool-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <a href="youtube-tags.html" class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            </div>
           </div>
-        </div>
-        <div class="tool-name">YouTube Description Builder</div>
-        <div class="tool-desc">Check character limits, preview the above-the-fold cut, validate timestamp formatting and count hashtags.</div>
-        <div class="tool-tags"><span class="tag">YouTube</span><span class="tag">Creators</span><span class="tag">SEO</span></div>
-        <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
-      </a>
+          <div class="tool-name">YouTube Tags Analyser</div>
+          <div class="tool-desc">Paste your tags and check total character count against the 500-char limit, detect duplicates and review tag lengths.</div>
+          <div class="tool-tags"><span class="tag">YouTube</span><span class="tag">Creators</span><span class="tag">Tags</span></div>
+          <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </a>
 
-      <a href="youtube-tags.html" class="tool-card">
-        <div class="tool-card-top">
-          <div class="tool-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      </div>
+    </div>
+
+    <div class="category-section cat-seo">
+      <div class="category-heading">
+        <span class="category-label">SEO</span>
+        <span class="category-pill">2 tools</span>
+        <span class="category-line"></span>
+      </div>
+      <div class="tools-grid">
+
+        <a href="keyword-density.html" class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
           </div>
-        </div>
-        <div class="tool-name">YouTube Tags Analyser</div>
-        <div class="tool-desc">Paste your tags and check total character count against the 500-char limit, detect duplicates and review tag lengths.</div>
-        <div class="tool-tags"><span class="tag">YouTube</span><span class="tag">Creators</span><span class="tag">Tags</span></div>
-        <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
-      </a>
+          <div class="tool-name">Keyword Density</div>
+          <div class="tool-desc">Analyse keyword frequency, density and prominence in any text. Colour-coded density signals for Amazon listings, SEO articles and ad copy.</div>
+          <div class="tool-tags"><span class="tag">SEO</span><span class="tag">Amazon</span><span class="tag">Keywords</span><span class="tag">Density</span></div>
+          <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </a>
 
-      <a href="serp-preview.html" class="tool-card">
-        <div class="tool-card-top">
-          <div class="tool-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <a href="serp-preview.html" class="tool-card">
+          <div class="tool-card-top">
+            <div class="tool-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
           </div>
-        </div>
-        <div class="tool-name">Google SERP Preview</div>
-        <div class="tool-desc">See exactly how your page title, meta description and URL look in Google search results. Colour-coded length checks and instant slug generator.</div>
-        <div class="tool-tags"><span class="tag">SEO</span><span class="tag">Blogging</span><span class="tag">Google</span><span class="tag">Meta</span></div>
-        <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
-      </a>
+          <div class="tool-name">Google SERP Preview</div>
+          <div class="tool-desc">See exactly how your page title, meta description and URL look in Google search results. Colour-coded length checks and instant slug generator.</div>
+          <div class="tool-tags"><span class="tag">SEO</span><span class="tag">Blogging</span><span class="tag">Google</span><span class="tag">Meta</span></div>
+          <div class="tool-arrow">Open tool <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </a>
 
+      </div>
     </div>
   </main>
 
