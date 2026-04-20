@@ -35,7 +35,7 @@
 
     /* Output rows */
     .output-rows { display: flex; flex-direction: column; }
-    .output-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .output-row { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--border); }
     .output-row:last-child { border-bottom: none; }
     .row-label { font-size: 12px; font-weight: 700; color: var(--text-muted); min-width: 200px; flex-shrink: 0; }
     .row-value { flex: 1; font-size: 14px; color: var(--text); font-family: monospace; word-break: break-all; line-height: 1.5; }
@@ -47,6 +47,7 @@
     .send-row { padding-top: 8px; }
 
     /* Info grid */
+    main > * + * { margin-top: 16px; }
     .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; }
     @media(max-width:600px) { .info-grid { grid-template-columns: 1fr; } .row-label { min-width: 160px; } }
     .info-item { display: flex; align-items: baseline; gap: 8px; padding: 5px 0; }

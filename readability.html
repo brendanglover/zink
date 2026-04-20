@@ -30,9 +30,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/main.css" />
   <style>
+    main > * + * { margin-top: 16px; }
     /* Score cards */
-    .score-cards { display: flex; gap: 12px; margin-bottom: 16px; }
-    .score-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; flex: 1; text-align: center; }
+    .score-cards { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 0; }
+    .score-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; flex: 1 1 140px; text-align: center; }
     .score-num { font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 1; margin-bottom: 4px; }
     .score-label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; }
     .score-sub { font-size: 12px; color: var(--text-faint); }
