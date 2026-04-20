@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Instantly convert text to camelCase, PascalCase, snake_case, kebab-case, SCREAMING_SNAKE_CASE and more. All formats shown at once. Free, no login, no data collected." />
+  <meta name="robots" content="index, follow" />
+  <title>Free Case Converter — camelCase, snake_case, PascalCase &amp; More | zink.</title>
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://gotzink.com/case-converter.html" />
+  <meta property="og:title" content="Free Case Converter — camelCase, snake_case, PascalCase &amp; More" />
+  <meta property="og:description" content="Instantly convert text to camelCase, PascalCase, snake_case, kebab-case, SCREAMING_SNAKE_CASE and more. All formats shown at once. Free, no login, no data collected." />
+  <meta property="og:image" content="https://gotzink.com/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Case Converter — camelCase, snake_case, PascalCase &amp; More | zink." />
+  <meta name="twitter:description" content="Instantly convert text to camelCase, PascalCase, snake_case, kebab-case, SCREAMING_SNAKE_CASE and more. Free, no login." />
+  <meta name="twitter:image" content="https://gotzink.com/og-image.svg" />
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XY13QWYYQ4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XY13QWYYQ4');
+  </script>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    .analyse-btn { padding: 5px 12px; border-radius: var(--radius-xs); font-size: 12px; font-weight: 600; font-family: var(--font); cursor: pointer; border: 1px solid var(--accent-hover); background: var(--accent-dim); color: var(--accent); transition: all var(--ease); display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .analyse-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* Output rows */
+    .output-rows { display: flex; flex-direction: column; }
+    .output-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .output-row:last-child { border-bottom: none; }
+    .row-label { font-size: 12px; font-weight: 700; color: var(--text-muted); min-width: 200px; flex-shrink: 0; }
+    .row-value { flex: 1; font-size: 14px; color: var(--text); font-family: monospace; word-break: break-all; line-height: 1.5; }
+    .row-value.empty { color: var(--text-faint); font-style: italic; }
+    .row-copy-btn { flex-shrink: 0; padding: 4px 10px; font-size: 11px; font-weight: 600; font-family: var(--font); cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text-muted); border-radius: var(--radius-xs); transition: all var(--ease); white-space: nowrap; }
+    .row-copy-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .row-copy-btn.copied { background: var(--success-dim, rgba(34,197,94,0.12)); color: var(--success); border-color: var(--success); }
+
+    .send-row { padding-top: 8px; }
+
+    /* Info grid */
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; }
+    @media(max-width:600px) { .info-grid { grid-template-columns: 1fr; } .row-label { min-width: 160px; } }
+    .info-item { display: flex; align-items: baseline; gap: 8px; padding: 5px 0; }
+    .info-format { font-size: 13px; font-weight: 700; color: var(--accent); font-family: monospace; white-space: nowrap; }
+    .info-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="header">
+    <a href="/" class="logo">zink<span>.</span></a>
+    <div class="header-right">
+      <a href="/" class="back-link">← All Tools</a>
+      <span class="tagline">free tools · no login · no data collected</span>
+      <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
+        <svg id="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg id="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             style="display:none">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Main ───────────────────────────────────────────── -->
+  <main>
+
+    <div class="tool-header">
+      <h1 class="tool-title">Case Converter</h1>
+      <p class="tool-subtitle">Paste your text — all formats update instantly.</p>
+    </div>
+
+    <!-- Input -->
+    <div class="card">
+      <div class="card-label-row">
+        <span class="card-label">Input</span>
+        <button class="clear-btn" id="clear-btn">Clear</button>
+      </div>
+      <textarea
+        id="input-text"
+        placeholder="Paste or type your text here..."
+        spellcheck="false"
+        aria-label="Text input"
+        style="min-height:120px"
+      ></textarea>
+    </div>
+
+    <!-- Output -->
+    <div class="card">
+      <div class="card-label-row">
+        <span class="card-label">Output</span>
+      </div>
+      <div class="output-rows" id="output-rows">
+
+        <div class="output-row">
+          <span class="row-label">camelCase</span>
+          <span class="row-value empty" id="out-camel">your-output-here</span>
+          <button class="row-copy-btn" data-target="out-camel">Copy</button>
+        </div>
+
+        <div class="output-row">
+          <span class="row-label">PascalCase</span>
+          <span class="row-value empty" id="out-pascal">your-output-here</span>
+          <button class="row-copy-btn" data-target="out-pascal">Copy</button>
+        </div>
+
+        <div class="output-row">
+          <span class="row-label">snake_case</span>
+          <span class="row-value empty" id="out-snake">your-output-here</span>
+          <button class="row-copy-btn" data-target="out-snake">Copy</button>
+        </div>
+
+        <div class="output-row">
+          <span class="row-label">kebab-case</span>
+          <span class="row-value empty" id="out-kebab">your-output-here</span>
+          <button class="row-copy-btn" data-target="out-kebab">Copy</button>
+        </div>
+
+        <div class="output-row">
+          <span class="row-label">SCREAMING_SNAKE_CASE</span>
+          <span class="row-value empty" id="out-screaming">your-output-here</span>
+          <button class="row-copy-btn" data-target="out-screaming">Copy</button>
+        </div>
+
+        <div class="output-row">
+          <span class="row-label">dot.case</span>
+          <span class="row-value empty" id="out-dot">your-output-here</span>
+          <button class="row-copy-btn" data-target="out-dot">Copy</button>
+        </div>
+
+        <div class="output-row">
+          <span class="row-label">Title Case</span>
+          <span class="row-value empty" id="out-title">your-output-here</span>
+          <button class="row-copy-btn" data-target="out-title">Copy</button>
+        </div>
+
+        <div class="output-row send-row" style="flex-wrap:wrap;gap:8px;">
+          <button class="analyse-btn" id="send-to-capitaliser">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+            Send to Title Capitaliser →
+          </button>
+        </div>
+
+        <div class="output-row">
+          <span class="row-label">Sentence case</span>
+          <span class="row-value empty" id="out-sentence">your-output-here</span>
+          <button class="row-copy-btn" data-target="out-sentence">Copy</button>
+        </div>
+
+        <div class="output-row">
+          <span class="row-label">UPPERCASE</span>
+          <span class="row-value empty" id="out-upper">your-output-here</span>
+          <button class="row-copy-btn" data-target="out-upper">Copy</button>
+        </div>
+
+        <div class="output-row">
+          <span class="row-label">lowercase</span>
+          <span class="row-value empty" id="out-lower">your-output-here</span>
+          <button class="row-copy-btn" data-target="out-lower">Copy</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- When to use each format -->
+    <div class="card" style="padding:16px;">
+      <span class="card-label">When to use each format</span>
+      <div class="info-grid" style="margin-top:12px;">
+        <div class="info-item">
+          <span class="info-format">camelCase</span>
+          <span class="info-desc">JavaScript variables and functions</span>
+        </div>
+        <div class="info-item">
+          <span class="info-format">PascalCase</span>
+          <span class="info-desc">Class names, React components</span>
+        </div>
+        <div class="info-item">
+          <span class="info-format">snake_case</span>
+          <span class="info-desc">Python variables, database columns</span>
+        </div>
+        <div class="info-item">
+          <span class="info-format">kebab-case</span>
+          <span class="info-desc">URLs, CSS classes, HTML attributes</span>
+        </div>
+        <div class="info-item">
+          <span class="info-format">SCREAMING_SNAKE</span>
+          <span class="info-desc">Constants and environment variables</span>
+        </div>
+        <div class="info-item">
+          <span class="info-format">dot.case</span>
+          <span class="info-desc">Config file keys, package names</span>
+        </div>
+        <div class="info-item">
+          <span class="info-format">Title Case</span>
+          <span class="info-desc">Headings, titles, button labels</span>
+        </div>
+        <div class="info-item">
+          <span class="info-format">Sentence case</span>
+          <span class="info-desc">Body copy, descriptions, sentences</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────── -->
+  <footer>
+    <span class="logo-text">zink</span><span class="logo-dot">.</span>
+    &nbsp;·&nbsp; Free tools. No login. No data collected.
+  </footer>
+
+  <script>
+    // ── Conversion helpers ──────────────────────────────────────────
+    function tokenise(text) {
+      // Split on spaces, underscores, hyphens; strip other punctuation
+      return text
+        .replace(/([a-z])([A-Z])/g, '$1 $2') // split existing camelCase
+        .split(/[\s_\-]+/)
+        .map(w => w.replace(/[^a-zA-Z0-9]/g, ''))
+        .filter(w => w.length > 0);
+    }
+
+    function toCamel(text) {
+      const words = tokenise(text);
+      if (!words.length) return '';
+      return words[0].toLowerCase() +
+        words.slice(1).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('');
+    }
+
+    function toPascal(text) {
+      return tokenise(text).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('');
+    }
+
+    function toSnake(text) {
+      return tokenise(text).map(w => w.toLowerCase()).join('_');
+    }
+
+    function toKebab(text) {
+      return tokenise(text).map(w => w.toLowerCase()).join('-');
+    }
+
+    function toScreaming(text) {
+      return tokenise(text).map(w => w.toUpperCase()).join('_');
+    }
+
+    function toDot(text) {
+      return text.toLowerCase().replace(/[\s_\-]+/g, '.').replace(/[^a-z0-9.]/g, '');
+    }
+
+    function toTitleCase(text) {
+      return text.replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+    }
+
+    function toSentence(text) {
+      const t = text.toLowerCase().trim();
+      return t.charAt(0).toUpperCase() + t.slice(1);
+    }
+
+    // ── UI ─────────────────────────────────────────────────────────
+    const input = document.getElementById('input-text');
+    const PLACEHOLDER = 'your-output-here';
+
+    const FORMATS = [
+      { id: 'out-camel',    fn: toCamel },
+      { id: 'out-pascal',   fn: toPascal },
+      { id: 'out-snake',    fn: toSnake },
+      { id: 'out-kebab',    fn: toKebab },
+      { id: 'out-screaming',fn: toScreaming },
+      { id: 'out-dot',      fn: toDot },
+      { id: 'out-title',    fn: toTitleCase },
+      { id: 'out-sentence', fn: toSentence },
+      { id: 'out-upper',    fn: t => t.toUpperCase() },
+      { id: 'out-lower',    fn: t => t.toLowerCase() },
+    ];
+
+    function update() {
+      const raw = input.value;
+      const isEmpty = raw.trim() === '';
+      FORMATS.forEach(({ id, fn }) => {
+        const el = document.getElementById(id);
+        if (isEmpty) {
+          el.textContent = PLACEHOLDER;
+          el.classList.add('empty');
+        } else {
+          el.textContent = fn(raw);
+          el.classList.remove('empty');
+        }
+      });
+    }
+
+    input.addEventListener('input', update);
+
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      input.value = '';
+      update();
+      input.focus();
+    });
+
+    // ── Copy buttons ────────────────────────────────────────────────
+    function copyText(text, btn) {
+      const orig = btn.textContent;
+      const doSuccess = () => {
+        btn.textContent = '✓ Copied';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(doSuccess).catch(() => fallback(text, doSuccess));
+      } else {
+        fallback(text, doSuccess);
+      }
+    }
+
+    function fallback(text, cb) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      try { document.execCommand('copy'); cb(); } catch(e) {}
+      document.body.removeChild(ta);
+    }
+
+    document.querySelectorAll('.row-copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const el = document.getElementById(btn.dataset.target);
+        if (!el || el.classList.contains('empty')) return;
+        copyText(el.textContent, btn);
+      });
+    });
+
+    // ── Send to Title Capitaliser ────────────────────────────────────
+    document.getElementById('send-to-capitaliser').addEventListener('click', () => {
+      const titleEl = document.getElementById('out-title');
+      if (!titleEl || titleEl.classList.contains('empty')) return;
+      try {
+        sessionStorage.setItem('zink-cap-text', titleEl.textContent);
+        sessionStorage.setItem('zink-cap-source', 'Case Converter');
+      } catch(e) {}
+      window.location.href = 'capitaliser.html';
+    });
+
+    // ── Theme toggle ────────────────────────────────────────────────
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('theme-btn');
+    const sunIcon = document.getElementById('icon-sun');
+    const moonIcon = document.getElementById('icon-moon');
+    function applyTheme(t) {
+      root.setAttribute('data-theme', t);
+      try { localStorage.setItem('zink-theme', t); } catch(e) {}
+      sunIcon.style.display = t === 'dark' ? 'block' : 'none';
+      moonIcon.style.display = t === 'light' ? 'block' : 'none';
+    }
+    const saved = () => { try { return localStorage.getItem('zink-theme'); } catch(e) { return null; } };
+    applyTheme(saved() || (window.matchMedia('(prefers-color-scheme:light)').matches ? 'light' : 'dark'));
+    themeBtn.addEventListener('click', () => applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+  </script>
+
+</body>
+</html>

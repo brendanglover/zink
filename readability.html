@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Check your text's readability score instantly. Flesch Reading Ease, Flesch-Kincaid Grade Level, sentence length analysis and audience label. Free, no login, no data collected." />
+  <meta name="robots" content="index, follow" />
+  <title>Free Readability Score Checker — Flesch-Kincaid Calculator | zink.</title>
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://gotzink.com/readability.html" />
+  <meta property="og:title" content="Free Readability Score Checker — Flesch-Kincaid Calculator" />
+  <meta property="og:description" content="Check your text's readability score instantly. Flesch Reading Ease, Flesch-Kincaid Grade Level, sentence length analysis and audience label. Free, no login, no data collected." />
+  <meta property="og:image" content="https://gotzink.com/og-image.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Readability Score Checker — Flesch-Kincaid Calculator | zink." />
+  <meta name="twitter:description" content="Flesch Reading Ease, Flesch-Kincaid Grade Level, sentence analysis. Free, no login." />
+  <meta name="twitter:image" content="https://gotzink.com/og-image.svg" />
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XY13QWYYQ4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XY13QWYYQ4');
+  </script>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    /* Score cards */
+    .score-cards { display: flex; gap: 12px; margin-bottom: 16px; }
+    .score-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; flex: 1; text-align: center; }
+    .score-num { font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 1; margin-bottom: 4px; }
+    .score-label { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; }
+    .score-sub { font-size: 12px; color: var(--text-faint); }
+    .score-ease-green { color: var(--success); }
+    .score-ease-amber { color: var(--warn); }
+    .score-ease-red   { color: var(--danger); }
+    .score-accent { color: var(--accent); }
+    .score-default { color: var(--text); }
+    @media(max-width:600px) { .score-cards { flex-wrap: wrap; } .score-card { min-width: calc(50% - 6px); flex: none; } }
+
+    /* Long sentences */
+    .long-sentence-item { padding: 12px 16px; border-left: 3px solid var(--warn); border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .long-sentence-item:last-child { border-bottom: none; }
+    .long-sentence-text { font-size: 13px; color: var(--text); line-height: 1.6; flex: 1; }
+    .warn-badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: rgba(234,179,8,0.12); color: var(--warn); border: 1px solid rgba(234,179,8,0.25); white-space: nowrap; flex-shrink: 0; }
+    .no-long { font-size: 13px; color: var(--success); padding: 12px 0; }
+
+    /* Reference table */
+    .ref-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .ref-table th { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-faint); padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+    .ref-table td { font-size: 13px; color: var(--text-muted); padding: 8px 8px; border-bottom: 1px solid var(--border); line-height: 1.4; }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .ref-score-green { color: var(--success); font-weight: 700; }
+    .ref-score-amber { color: var(--warn); font-weight: 700; }
+    .ref-score-red   { color: var(--danger); font-weight: 700; }
+
+    /* Long sentences placeholder */
+    .ls-placeholder { font-size: 13px; color: var(--text-faint); font-style: italic; padding: 4px 0; }
+
+    #input-text { min-height: 180px; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="header">
+    <a href="/" class="logo">zink<span>.</span></a>
+    <div class="header-right">
+      <a href="/" class="back-link">← All Tools</a>
+      <span class="tagline">free tools · no login · no data collected</span>
+      <button class="theme-btn" id="theme-btn" aria-label="Toggle theme">
+        <svg id="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg id="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             style="display:none">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Main ───────────────────────────────────────────── -->
+  <main>
+
+    <div class="tool-header">
+      <h1 class="tool-title">Readability Score</h1>
+      <p class="tool-subtitle">Paste your text and get an instant Flesch-Kincaid readability score.</p>
+    </div>
+
+    <!-- Input -->
+    <div class="card">
+      <div class="card-label-row">
+        <span class="card-label">Input</span>
+        <button class="clear-btn" id="clear-btn">Clear</button>
+      </div>
+      <textarea
+        id="input-text"
+        placeholder="Paste your article, blog post, product description or any text here..."
+        spellcheck="false"
+        aria-label="Text input"
+      ></textarea>
+    </div>
+
+    <!-- Score cards -->
+    <div class="score-cards">
+      <div class="score-card">
+        <div class="score-num score-default" id="score-ease">—</div>
+        <div class="score-label">Reading Ease</div>
+        <div class="score-sub" id="score-ease-label">Flesch Reading Ease</div>
+      </div>
+      <div class="score-card">
+        <div class="score-num score-accent" id="score-grade">—</div>
+        <div class="score-label">Grade Level</div>
+        <div class="score-sub">Flesch-Kincaid</div>
+      </div>
+      <div class="score-card">
+        <div class="score-num score-default" id="score-asl">—</div>
+        <div class="score-label">Avg sentence</div>
+        <div class="score-sub">words per sentence</div>
+      </div>
+      <div class="score-card">
+        <div class="score-num score-default" id="score-asw">—</div>
+        <div class="score-label">Avg syllables</div>
+        <div class="score-sub">per word</div>
+      </div>
+    </div>
+
+    <!-- Long sentences -->
+    <div class="card">
+      <div class="card-label-row">
+        <span class="card-label">Long sentences</span>
+      </div>
+      <div id="long-sentences-body">
+        <p class="ls-placeholder">Sentences over 25 words will be flagged here</p>
+      </div>
+    </div>
+
+    <!-- Reference -->
+    <div class="card">
+      <div class="card-label-row">
+        <span class="card-label">Score reference</span>
+      </div>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>Score</th>
+            <th>Label</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="ref-score-green">90–100</td><td>Very Easy</td><td>Aimed at an 11-year-old</td></tr>
+          <tr><td class="ref-score-green">80–90</td><td>Easy</td><td>Conversational English</td></tr>
+          <tr><td class="ref-score-green">70–80</td><td>Fairly Easy</td><td>Most consumers can read</td></tr>
+          <tr><td class="ref-score-green">60–70</td><td>Standard</td><td>Plain English standard</td></tr>
+          <tr><td class="ref-score-amber">50–60</td><td>Fairly Difficult</td><td>College-level reading</td></tr>
+          <tr><td class="ref-score-amber">30–50</td><td>Difficult</td><td>University degree level</td></tr>
+          <tr><td class="ref-score-red">0–30</td><td>Very Confusing</td><td>Professional / academic</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────── -->
+  <footer>
+    <span class="logo-text">zink</span><span class="logo-dot">.</span>
+    &nbsp;·&nbsp; Free tools. No login. No data collected.
+  </footer>
+
+  <script>
+    // ── Syllable counter ────────────────────────────────────────────
+    function countSyllables(word) {
+      word = word.toLowerCase().replace(/[^a-z]/g, '');
+      if (!word) return 0;
+      if (word.length <= 3) return 1;
+      word = word.replace(/e$/, '');
+      const matches = word.match(/[aeiou]+/g);
+      return Math.max(1, matches ? matches.length : 1);
+    }
+
+    // ── Text metrics ────────────────────────────────────────────────
+    function getMetrics(text) {
+      const trimmed = text.trim();
+      if (!trimmed) return null;
+
+      const sentences = trimmed.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 0);
+      const words = trimmed.split(/\s+/).filter(w => w.length > 0);
+
+      if (!words.length || !sentences.length) return null;
+
+      const totalSyllables = words.reduce((acc, w) => acc + countSyllables(w), 0);
+      const asl = words.length / sentences.length;
+      const asw = totalSyllables / words.length;
+
+      const ease = Math.min(100, Math.max(0, 206.835 - (1.015 * asl) - (84.6 * asw)));
+      const grade = Math.min(18, Math.max(0, (0.39 * asl) + (11.8 * asw) - 15.59));
+
+      return { ease, grade, asl, asw, sentences, words };
+    }
+
+    function audienceLabel(ease) {
+      if (ease >= 90) return 'Very Easy — aimed at an 11-year-old';
+      if (ease >= 80) return 'Easy — conversational English';
+      if (ease >= 70) return 'Fairly Easy — most consumers can read';
+      if (ease >= 60) return 'Standard — Plain English standard';
+      if (ease >= 50) return 'Fairly Difficult — college-level reading';
+      if (ease >= 30) return 'Difficult — university degree level';
+      return 'Very Confusing — professional / academic';
+    }
+
+    function easeClass(ease) {
+      if (ease >= 60) return 'score-ease-green';
+      if (ease >= 40) return 'score-ease-amber';
+      return 'score-ease-red';
+    }
+
+    // ── DOM refs ────────────────────────────────────────────────────
+    const input = document.getElementById('input-text');
+    const elEase = document.getElementById('score-ease');
+    const elEaseLabel = document.getElementById('score-ease-label');
+    const elGrade = document.getElementById('score-grade');
+    const elAsl = document.getElementById('score-asl');
+    const elAsw = document.getElementById('score-asw');
+    const elLong = document.getElementById('long-sentences-body');
+
+    function reset() {
+      [elEase, elGrade, elAsl, elAsw].forEach(el => el.textContent = '—');
+      elEase.className = 'score-num score-default';
+      elEaseLabel.textContent = 'Flesch Reading Ease';
+      elLong.innerHTML = '<p class="ls-placeholder">Sentences over 25 words will be flagged here</p>';
+    }
+
+    function update() {
+      const m = getMetrics(input.value);
+      if (!m) { reset(); return; }
+
+      elEase.textContent = Math.round(m.ease);
+      elEase.className = 'score-num ' + easeClass(m.ease);
+      elEaseLabel.textContent = audienceLabel(m.ease);
+
+      elGrade.textContent = m.grade.toFixed(1);
+      elAsl.textContent = Math.round(m.asl);
+      elAsw.textContent = m.asw.toFixed(1);
+
+      // Long sentences
+      const long = m.sentences.filter(s => s.split(/\s+/).filter(w => w.length > 0).length > 25);
+      if (!long.length) {
+        elLong.innerHTML = '<p class="no-long">✓ No long sentences found — good rhythm throughout.</p>';
+      } else {
+        elLong.innerHTML = long.map(s => {
+          const wc = s.split(/\s+/).filter(w => w.length > 0).length;
+          return `<div class="long-sentence-item">
+            <span class="long-sentence-text">${escHtml(s)}</span>
+            <span class="warn-badge">${wc} words</span>
+          </div>`;
+        }).join('');
+      }
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    input.addEventListener('input', update);
+
+    document.getElementById('clear-btn').addEventListener('click', () => {
+      input.value = '';
+      reset();
+      input.focus();
+    });
+
+    // ── Theme toggle ────────────────────────────────────────────────
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('theme-btn');
+    const sunIcon = document.getElementById('icon-sun');
+    const moonIcon = document.getElementById('icon-moon');
+    function applyTheme(t) {
+      root.setAttribute('data-theme', t);
+      try { localStorage.setItem('zink-theme', t); } catch(e) {}
+      sunIcon.style.display = t === 'dark' ? 'block' : 'none';
+      moonIcon.style.display = t === 'light' ? 'block' : 'none';
+    }
+    const saved = () => { try { return localStorage.getItem('zink-theme'); } catch(e) { return null; } };
+    applyTheme(saved() || (window.matchMedia('(prefers-color-scheme:light)').matches ? 'light' : 'dark'));
+    themeBtn.addEventListener('click', () => applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+  </script>
+
+</body>
+</html>

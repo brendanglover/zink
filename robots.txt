@@ -7,5 +7,7 @@ Allow: /youtube-title.html
 Allow: /youtube-description.html
 Allow: /youtube-tags.html
 Allow: /serp-preview.html
+Allow: /case-converter.html
+Allow: /readability.html
 
 Sitemap: https://gotzink.com/sitemap.xml
